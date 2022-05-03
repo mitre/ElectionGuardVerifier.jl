@@ -1,0 +1,5 @@
+#! /bin/sh
+
+# Run julia after activating this project
+
+exec julia --project=. "$@"
