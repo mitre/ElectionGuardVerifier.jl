@@ -162,7 +162,7 @@ struct Ballot_selection
 end
 
 struct Constant_proof
-    constant::Int64
+    constant::Int64             # L
     usage::String
     pad::BigInt                 # a
     data::BigInt                # b
