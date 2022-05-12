@@ -21,3 +21,12 @@ The MITRE ElectionGuard Verifier is written in the
 [Julia](https://julialang.org/) programming language.  Follow the
 instructions at the Julia web site to download and install the system
 on your computer.
+
+## Design Goal
+
+Our goal is to write easily understood correct code.
+We follow Donald Knuth advice on writing software:
+
+>  Instead of imagining that our main task is to instruct a
+>  *computer* what to do, let us concentrate rather on
+>  explaining to *human beings* what we want a computer to do.

@@ -5,6 +5,14 @@ CurrentModule = ElectionGuardVerifier
 ```
 
 This section introduces the source code that makes up the verifier.
+According to C.A.R Hoare:
+
+>  There are two ways of constructing a software design.
+>  One way is to make it so simple that there are obviously
+>  no deficiencies.  And the other way is to make it so
+>  complicated that there are no obvious deficiencies.
+
+Our goal is to always write code that is obviously correct.
 
 ## Datatypes
 
