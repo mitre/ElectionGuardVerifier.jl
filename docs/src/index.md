@@ -1,5 +1,7 @@
 # MITRE ElectionGuard Verifier
 
+John D. Ramsdell and Moses D. Liskov
+
 [ElectionGuard](https://www.electionguard.vote/) is a software system
 designed to make voting more secure, transparent and accessible.
 ElectionGuard uses cryptography to ensure that
@@ -17,15 +19,10 @@ that use version [0.95 data
 formats](https://github.com/microsoft/electionguard/tree/main/data/0.95.0)
 in an easy to use package.
 
-The MITRE ElectionGuard Verifier is written in the
-[Julia](https://julialang.org/) programming language.  Follow the
-instructions at the Julia web site to download and install the system
-on your computer.
-
 ## Design Goal
 
 Our goal is to write easily understood correct code.
-We follow Donald Knuth advice on writing software:
+We follow Donald Knuth advice's on writing software:
 
 >  Instead of imagining that our main task is to instruct a
 >  *computer* what to do, let us concentrate rather on

@@ -1,5 +1,7 @@
 # MITRE ElectionGuard Verifier
 
+John D. Ramsdell and Moses D. Liskov
+
 [ElectionGuard](https://www.electionguard.vote/) is a software system
 designed to make voting more secure, transparent and accessible.
 ElectionGuard uses cryptography to ensure that
