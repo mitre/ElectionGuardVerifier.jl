@@ -60,7 +60,12 @@ package management system.  For now, follow these instructions.
 
 ## Debugging
 
-For debugging, I place sample data at
+For debugging 1.0.0-preview-1 data, I place sample data at
+`../electionguard/data/1.0.0-preview-1/sample`, start julia with
+`julia --project=.` (see the `ju` script), replace steps 2-3 with
+`include("src/Run.jl")`, and then load the data with `er=load(path);`.
+
+For debugging 0.95.0 data, I place sample data at
 `../electionguard/data/0.95.0/sample`, start julia with `julia
 --project=.`, and replace steps 2-5 with `include("src/Chk.jl")`.  By
 default, it checks the small sample.  You can test the minimal sample

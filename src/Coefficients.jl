@@ -18,7 +18,8 @@ function check_coefficients(er::Election_record)::Bool
     ans = true
     c = er.constants
     coefs = er.coefficients.coefficients
-    for (ell, w_ell) = enumerate(coefs)
+    for (ell, w_ell) in coefs
+        ell = parse(Int64, ell)
         prod_j = 1
         prod_j_minus_ell = 1
         for j in 1:length(coefs)

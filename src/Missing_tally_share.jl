@@ -32,7 +32,7 @@ function check_missing_tally_share(er::Election_record,
                     shares += 1
                     prod = BigInt(1)
                     for (_, rp) in share.recovered_parts
-                        coef = guardian_coefficient(er, rp.guardian_id)
+                        coef = er.coefficients.coefficients[rp.guardian_id]
                         prod = mulpowmod(prod,
                                          rp.share,
                                          coef,
@@ -60,18 +60,6 @@ function check_missing_tally_share(er::Election_record,
         println("    $good_shares out of $shares incorrect.")
         false
     end
-end
-
-# It's odd that a guardian_id is a string instead of an int that
-# contains its sequence order.  For now, one has to do the following
-# search to convert from the id to the sequence order.
-function guardian_coefficient(er::Election_record, guardian::String)::BigInt
-    for g in er.guardians
-        if g.guardian_id == guardian
-            return er.coefficients.coefficients[g.sequence_order]
-        end
-    end
-    error("Guardian $guardian not found")
 end
 
 end
