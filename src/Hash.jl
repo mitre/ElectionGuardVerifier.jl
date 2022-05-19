@@ -44,7 +44,7 @@ function eg_hash(q::BigInt, x, xs...)::BigInt
     # End with vertical bar.
     update!(ctx, vbar_bytestring)
     # Convert hash to a BigInt assuming a big endian byte ordering.
-    mod(to_big(digest!(ctx)), q - BigInt(1))
+    mod(to_big(digest!(ctx)), q)
 end
 
 "Hash a single item."
