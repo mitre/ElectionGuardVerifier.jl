@@ -10,52 +10,54 @@ modify it under the terms of the MIT License.
 module Guardian_pubkey
 
 using ..Datatypes
+using ..Answers
 using ..Utils
 using ..Hash
 
-export check_guardian_pubkey
+export verify_guardian_pubkey
 
 "2. Guardian Public-key Validation"
-function check_guardian_pubkey(er::Election_record)::Bool
-    ans = true
+function verify_guardian_pubkey(er::Election_record)::Answer
+    acc = 0                     # Accumulated bit items
+    comment = "Guardian pubkeys are valid."
+    count = 0                   # Records checked
+    failed = 0
     for g in er.guardians
-        if !check_proofs(er.constants, er.context, g)
+        count += 1
+        bits =  verify_proofs(er.constants, er.context, g)
+        if bits != 0
             name = g.guardian_id
-            println(" 2. Guardian $name pubkey is invalid.")
-            ans = false
+            comment = "Guardian $name pubkey is invalid."
+            failed += 1
+            acc |= bits
         end
     end
-    if ans
-        println(" 2. Guardian pubkeys are valid.")
-    end
-    ans
+    answer(2, bits2items(acc), "Guardian public-key validation",
+           comment, count, failed)
 end
 
-function check_proofs(c::Constants, ctx::Context, g::Guardian)::Bool
-    all(p -> check_schnorr(c, ctx, p), g.election_proofs)
+function verify_proofs(c::Constants, ctx::Context, g::Guardian)::Int64
+    bitor(p -> verify_schnorr(c, ctx, p), g.election_proofs)
 end
 
-"Check Guardian Public-Key Validation."
-function check_schnorr(c::Constants, ctx::Context, p::Schnorr_proof)::Bool
-    check_schnorr_a(c, ctx, p) && check_schnorr_b(c, p)
+"Verify Guardian Public-Key Validation."
+function verify_schnorr(c::Constants, ctx::Context, p::Schnorr_proof)::Int64
+    verify_schnorr_a(c, ctx, p) | verify_schnorr_b(c, p)
 end
 
-"Check that c_ij = H(Q, K_ij, h_ij) (Eq. A), NOT."
-function check_schnorr_a(c::Constants, ctx::Context, p::Schnorr_proof)::Bool
+"Verify that c_ij = H(K_ij, h_ij) mod q (Eq. A)."
+function verify_schnorr_a(c::Constants, ctx::Context, p::Schnorr_proof)::Int64
     p.challenge ==
         mod(eg_hash(c.q,
-                    #! Spec conflict
-                    # Deleted in code but not yet in spec
-                    # ctx.crypto_base_hash,
                     p.public_key,
                     p.commitment),
-            c.q)
+            c.q) ? 0 : A
 end
 
-"Check that g^u_ij mod p = h_ij K_ij ^ c_ij mod p (Eq. B)."
-function check_schnorr_b(c::Constants, p::Schnorr_proof)::Bool
+"Verify that g^u_ij mod p = h_ij K_ij ^ c_ij mod p (Eq. B)."
+function verify_schnorr_b(c::Constants, p::Schnorr_proof)::Int64
     powermod(c.g, p.response, c.p) ==
-        mulpowmod(p.commitment, p.public_key, p.challenge, c.p)
+        mulpowmod(p.commitment, p.public_key, p.challenge, c.p) ? 0 : B
 end
 
 end

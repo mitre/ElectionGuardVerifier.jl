@@ -15,7 +15,9 @@ made available by using the module in a Julia intepreter.
 
 module ElectionGuardVerifier
 
-export load, check
+export load, check, verify
+
+import JSON
 
 include("Datatypes.jl")
 
@@ -31,6 +33,10 @@ include("Utils.jl")
 include("ElGamal.jl")           # Not currently used
 
 include("Hash.jl")
+
+include("Answers.jl")
+
+using .Answers: Answer, Verification_record, verification_record
 
 # 1. Parameter validation
 include("Standard_constants.jl")
@@ -75,40 +81,58 @@ include("Contest_selections.jl")
 # 12. Validation of Correct Decryption of Spoiled Ballots
 include("Spoiled_ballots.jl")
 
-function chk(ans::Bool, probe::Bool)::Bool
-    probe && ans
+function print_push!(as::Vector{Answer}, a::Answer)
+    println(a)
+    push!(as, a)
 end
 
 """
-    check(er::Election_record)::Bool
+    verify(er::Election_record)::Verification_record
 
-Check election records.  Return true if all checks pass.
+Verify election records.  Return a verification record.
 """
-function check(er::Election_record)::Bool
+function verify(er::Election_record)::Verification_record
     println(er.manifest["election_scope_id"])
-    ans = true
-    ans = chk(ans, Params.check_params(er))
-    ans = chk(ans, Guardian_pubkey.check_guardian_pubkey(er))
-    ans = chk(ans, Election_pubkey.check_election_pubkey(er))
-    ans = chk(ans, Selection_encryptions.check_selection_encryptions(er))
-    ans = chk(ans, Vote_limits.check_vote_limits(er))
-    ans = chk(ans, Duplicate_ballots.check_duplicate_ballots(er))
+    as = Vector{Answer}()
+    print_push!(as, Params.verify_params(er))
+    print_push!(as, Guardian_pubkey.verify_guardian_pubkey(er))
+    print_push!(as, Election_pubkey.verify_election_pubkey(er))
+    print_push!(as, Selection_encryptions.verify_selection_encryptions(er))
+    print_push!(as, Vote_limits.verify_vote_limits(er))
+    print_push!(as, Duplicate_ballots.check_duplicate_ballots(er))
     println(" 6. Ballot chaining validity was not checked.")
-    ans = chk(ans, Ballot_aggregation.check_ballot_aggregation(er))
-    ans = chk(ans, Partial_decryptions.
-        check_partial_decryptions(er, er.tally, true))
-    ans = chk(ans, Substitute_decryptions.
-        check_substitute_decryptions(er, er.tally, true))
-    ans = chk(ans, Coefficients.check_coefficients(er))
-    ans = chk(ans, Missing_tally_share.
-        check_missing_tally_share(er, er.tally, true))
-    ans = chk(ans, Tally_decryptions.
-        check_tally_decryptions(er, er.tally, true))
-    ans = chk(ans, Contest_selections.
-        check_contest_selections(er, er.tally, true))
-    # Ignore errors in spoiled ballots for now.
-    _ = chk(ans, Spoiled_ballots.check_spoiled_ballots(er))
-    ans
+    print_push!(as, Ballot_aggregation.verify_ballot_aggregation(er))
+    print_push!(as, Partial_decryptions.
+        verify_partial_decryptions(er, er.tally, true))
+    print_push!(as, Substitute_decryptions.
+        verify_substitute_decryptions(er, er.tally, true))
+    print_push!(as, Coefficients.verify_coefficients(er))
+    print_push!(as, Missing_tally_share.
+        verify_missing_tally_share(er, er.tally, true))
+    print_push!(as, Tally_decryptions.
+        verify_tally_decryptions(er, er.tally, true))
+    print_push!(as, Contest_selections.
+        verify_contest_selections(er, er.tally, true))
+    append!(as, Spoiled_ballots.verify_spoiled_ballots(er))
+    verification_record(er, as)
+end
+
+"""
+    check(er::Election_record, path::String="")::Bool
+
+Check election record.  Write answers to path in JSON if path is not empty.
+"""
+function check(er::Election_record, path::String="")::Bool
+    vr = verify(er)
+    if path != ""
+        handle = open(path, "w")
+        try
+            JSON.print(handle, vr, 2)
+        finally
+            close(handle)
+        end
+    end
+    vr.verified
 end
 
 end # ElectionGuard module

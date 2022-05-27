@@ -12,44 +12,51 @@ modify it under the terms of the MIT License.
 module Vote_limits
 
 using ..Datatypes
+using ..Answers
 using ..Utils
 using ..Hash
 
-export check_vote_limits
+export verify_vote_limits
 
-"5. Adherence to vote limits"
-function check_vote_limits(er::Election_record)::Bool
-    ans = true
+"5. Adherence to Vote Limits"
+function verify_vote_limits(er::Election_record)::Answer
+    acc = 0                     # Accumulated bit items
+    comment = "Vote limits are adhered to."
+    count = 0                   # Records checked
+    failed = 0
     contests = er.manifest["contests"]
     for ballot in er.submitted_ballots
+        count += 1
+        failed_yet = false      # Ensure at most one failure
         for contest in ballot.contests
-            if !are_vote_limits_correct(er, contests, contest)
-                if ans
-                    name = ballot.object_id
-                    println(" 5. Ballot $name fails to adhere to vote limits.")
-                    id = contest.object_id
-                    println("    The failing contest is $id.")
+            bits = are_vote_limits_correct(er, contests, contest)
+            if bits != 0
+                name = ballot.object_id
+                id = contest.object_id
+                comment =
+                    "Contest $id in ballot $name fails to adhere to vote limits."
+                acc |= bits
+                if !failed_yet
+                    failed += 1
+                    failed_yet = true
                 end
-                ans = false
             end
         end
     end
-    if ans
-        println(" 5. Vote limits are adhered to.")
-    end
-    ans
+    answer(5, bits2items(acc), "Adherence to vote limits",
+           comment, count, failed)
 end
 
 function are_vote_limits_correct(er::Election_record,
                                  contests::Vector{Any},
-                                 contest::Contest)::Bool
+                                 contest::Contest)::Int64
     votes_allowed = get_votes_allow(contests, contest)
-    are_vote_limits_correct_a(votes_allowed, contest) &&
-        are_vote_limits_correct_b(er, contest) &&
-        are_vote_limits_correct_c(er, contest) &&
-        are_vote_limits_correct_d(er, contest) &&
-        are_vote_limits_correct_e(er, contest) &&
-        are_vote_limits_correct_f(er, contest) &&
+    are_vote_limits_correct_a(votes_allowed, contest) |
+        are_vote_limits_correct_b(er, contest) |
+        are_vote_limits_correct_c(er, contest) |
+        are_vote_limits_correct_d(er, contest) |
+        are_vote_limits_correct_e(er, contest) |
+        are_vote_limits_correct_f(er, contest) |
         are_vote_limits_correct_g(er, votes_allowed, contest)
 end
 
@@ -63,8 +70,8 @@ function get_votes_allow(contests::Vector{Any}, contest::Contest)::Int64
 end
 
 function are_vote_limits_correct_a(votes_allowed::Int64,
-                                   contest::Contest)::Bool
-    placeholder_positions(contest) == votes_allowed
+                                   contest::Contest)::Int64
+    placeholder_positions(contest) == votes_allowed ? 0 : A
 end
 
 function placeholder_positions(contest::Contest)::Int64
@@ -78,57 +85,54 @@ function placeholder_positions(contest::Contest)::Int64
 end
 
 function are_vote_limits_correct_b(er::Election_record,
-                                   contest::Contest)::Bool
+                                   contest::Contest)::Int64
     c = er.constants
     votes = one_ct
     for sel in contest.ballot_selections
         votes = prod_ct(votes, sel.ciphertext, c.p)
     end
-    same(votes, contest.ciphertext_accumulation)
+    same(votes, contest.ciphertext_accumulation) ? 0 : B
 end
 
 function are_vote_limits_correct_c(er::Election_record,
-                                   contest::Contest)::Bool
-    within(contest.proof.response, er.constants.q)
+                                   contest::Contest)::Int64
+    within(contest.proof.response, er.constants.q) ? 0 : C
 end
 
 function are_vote_limits_correct_d(er::Election_record,
-                                   contest::Contest)::Bool
+                                   contest::Contest)::Int64
     c = er.constants
     p = contest.proof
-    within_mod(p.pad, c.q, c.p) && within_mod(p.data, c.q, c.p)
+    within_mod(p.pad, c.q, c.p) && within_mod(p.data, c.q, c.p) ? 0 : D
 end
 
 function are_vote_limits_correct_e(er::Election_record,
-                                   contest::Contest)::Bool
+                                   contest::Contest)::Int64
     c = er.constants
     p = contest.proof
     p.challenge ==
-        #! Spec conflict
-        # Incorrect hash was specified.
-        # This is the correct one.
         eg_hash(c.q,
                 er.context.crypto_extended_base_hash,
                 contest.ciphertext_accumulation.pad,
                 contest.ciphertext_accumulation.data,
                 p.pad,
-                p.data)
+                p.data) ? 0 : E
 end
 
 function are_vote_limits_correct_f(er::Election_record,
-                                   contest::Contest)::Bool
+                                   contest::Contest)::Int64
     c = er.constants
     p = contest.proof
     powermod(c.g, p.response, c.p) ==
         mulpowmod(p.pad,
                   contest.ciphertext_accumulation.pad,
                   p.challenge,
-                  c.p)
+                  c.p) ? 0 : F
 end
 
 function are_vote_limits_correct_g(er::Election_record,
                                    votes_allowed::Int64,
-                                   contest::Contest)::Bool
+                                   contest::Contest)::Int64
     c = er.constants
     p = contest.proof
     mulpowmod(powermod(c.g, votes_allowed * p.challenge, c.p),
@@ -138,7 +142,7 @@ function are_vote_limits_correct_g(er::Election_record,
                   mulpowmod(p.data,
                             contest.ciphertext_accumulation.data,
                             p.challenge,
-                            c.p)
+                            c.p) ? 0 : G
 end
 
 end

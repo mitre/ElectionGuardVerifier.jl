@@ -1,4 +1,4 @@
-# 12. Validation of Correct Decryption of Spoiled Ballots
+# 13. Validation of Correct Decryption of Spoiled Ballots
 
 #=
 Copyright (c) 2022 The MITRE Corporation
@@ -10,38 +10,36 @@ modify it under the terms of the MIT License.
 module Spoiled_ballots
 
 using ..Datatypes
+using ..Answers
 using ..Partial_decryptions
 using ..Substitute_decryptions
 using ..Missing_tally_share
 using ..Tally_decryptions
 using ..Contest_selections
 
-export check_spoiled_ballots
+export verify_spoiled_ballots
 
-function chk(ans::Bool, probe::Bool)::Bool
-    probe && ans
+function print_push!(as::Vector{Answer}, a::Answer)
+    println(a)
+    push!(as, a)
 end
 
-"12. Validation of Correct Decryption of Spoiled Ballots"
-function check_spoiled_ballots(er::Election_record)
-    ans = true
-    println("12. Checking spoiled ballots...")
+"13. Validation of Correct Decryption of Spoiled Ballots"
+function verify_spoiled_ballots(er::Election_record)::Vector{Answer}
+    as = Vector{Answer}()
     for ballot in er.spoiled_ballots
-        println()
-        id = ballot.object_id
-        println("Checking ballot $id")
-        ans = chk(ans, Partial_decryptions.
-            check_partial_decryptions(er, ballot, false))
-        ans = chk(ans, Substitute_decryptions.
-            check_substitute_decryptions(er, ballot, false))
-        ans = chk(ans, Missing_tally_share.
-            check_missing_tally_share(er, ballot, false))
-        ans = chk(ans, Tally_decryptions.
-            check_tally_decryptions(er, ballot, false))
-        ans = chk(ans, Contest_selections.
-            check_contest_selections(er, ballot, false))
+        print_push!(as, Partial_decryptions.
+            verify_partial_decryptions(er, ballot, false))
+        print_push!(as, Substitute_decryptions.
+            verify_substitute_decryptions(er, ballot, false))
+        print_push!(as, Missing_tally_share.
+            verify_missing_tally_share(er, ballot, false))
+        print_push!(as, Tally_decryptions.
+            verify_tally_decryptions(er, ballot, false))
+        print_push!(as, Contest_selections.
+            verify_contest_selections(er, ballot, false))
     end
-    ans
+    as
 end
 
 end

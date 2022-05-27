@@ -12,35 +12,34 @@ modify it under the terms of the MIT License.
 module Ballot_aggregation
 
 using ..Datatypes
+using ..Answers
 using ..Utils
 
-export check_ballot_aggregation
+export verify_ballot_aggregation
 
-"6. Correctness of Ballot Aggregation"
-function check_ballot_aggregation(er::Election_record)::Bool
-    tallies = 0
-    good_tallies = 0
+"7. Correctness of Ballot Aggregation"
+function verify_ballot_aggregation(er::Election_record)::Answer
+    count = 0                   # Records checked
+    failed = 0
     # for each contest
     for (_, c) in er.tally.contests
         # for each selection in contest
         for (_, sel) in c.selections
-            tallies += 1
+            count += 1
             sum = sum_votes(er, c.object_id, sel.object_id)
-            if same(sum, sel.message)
-                good_tallies += 1
+            if !same(sum, sel.message)
+                failed += 1
             end
         end
     end
-    if tallies == good_tallies
-        println(" 7. Tally aggregation is correct.")
-        true
+    if failed == 0
+        comment = "Tally aggregation is correct."
     else
         name = er.tally.object_id
-        println(" 7. Tally $name ballot aggregation is incorrect,")
-        good_tallies = tallies - good_tallies
-        println("    $good_tallies out of $tallies incorrect.")
-        false
+        comment = "Tally $name ballot aggregation is incorrect."
     end
+    answer(7, "", "Correctness of ballot aggregation",
+           comment, count, failed)
 end
 
 # Sum votes for each ballot.
