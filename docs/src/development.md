@@ -49,6 +49,21 @@ one_ct
 prod_ct(x1::Ciphertext, x2::Ciphertext, p::BigInt)
 ```
 
+## Answers
+
+```@meta
+CurrentModule = ElectionGuardVerifier.Answers
+```
+
+```@docs
+Answers
+answer(step::Int64, items::String, section::String,
+       comment::String, count::Int64, failed::Int64)
+verification_record(er::Election_record,
+                    anss::Vector{Answer})
+bits2items(bits::Int64)
+```
+
 ## Check
 
 ```@meta
@@ -60,13 +75,4 @@ The `check` function implements what is described in the version 1.0
 
 ```@docs
 check(er::Election_record)
-```
-
-## Errata
-
-The places at which the code is at odds with what is in the spec can
-be found by searching for the follow comment in the Julia source code:
-
-```
-#! Spec conflict
 ```

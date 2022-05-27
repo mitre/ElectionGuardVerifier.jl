@@ -38,7 +38,7 @@ function verify_election_pubkey(er::Election_record)::Answer
                "Election pubkey is valid.", 1, 0)
     else
         answer(3, bits2items(bits), "Election public-key validation",
-               "Election pubkey is invalid.", 1, 0)
+               "Election pubkey is invalid.", 1, 1)
     end
 end
 

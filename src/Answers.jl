@@ -7,7 +7,7 @@ This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
-#=
+"""
 This module provides data structures and operations used to report
 verification answers.  At the top-level, there is a verification
 record.  It identifies the specification version, the election, and
@@ -26,8 +26,7 @@ integer with one bit set.  The bit is used to identify the item being
 checked.  The bit patterns are exported as constants A, B, C, D, E, F,
 G, H, I, J, and K.  The bit patterns for multiple checks are combined
 using bitwise or.
-=#
-
+"""
 module Answers
 
 export Answer, answer, verification_record, bits2items, bitor
