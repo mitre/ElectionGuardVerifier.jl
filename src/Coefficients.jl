@@ -39,7 +39,7 @@ function verify_coefficients(er::Election_record)::Answer
         end
     end
     answer(10, failed == 0 ? "" : "A",
-           "Correctness of coefficients",
+           "Correctness of construction of replacement partial decryption",
            comment, count, failed)
 end
 

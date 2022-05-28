@@ -19,10 +19,10 @@ function verify_contest_selections(er::Election_record,
                                    tally::Tally,
                                    is_tally)::Answer
     acc = 0                     # Accumulated bit items
-    # C means contest missing in tally
-    # D means ballot selection missing in tally
-    # E means extra contest in tally
-    # F means extra ballot selection in tally
+    # C means a contest is  missing in the tally
+    # D means a ballot selection is missing in the tally
+    # E means an extra contest is in the tally
+    # F means an extra ballot selection is in the tally
     count = 0                   # Records checked
     failed = 0
     if is_tally
@@ -91,7 +91,7 @@ function verify_contest_selections(er::Election_record,
     end
 
     answer(step, bits2items(acc),
-           "Validation of contest selections with the manifest",
+           "Validation of correct decryption of tallies",
            comment, count, failed)
 end
 

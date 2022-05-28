@@ -60,7 +60,7 @@ function verify_missing_tally_share(er::Election_record,
         comment = "Missing $name shares are incorrect."
     end
     answer(step, failed == 0 ? "" : "B",
-           "Missing tally share",
+           "Correctness of construction of replacement partial decryptions",
            comment, count, failed)
 end
 

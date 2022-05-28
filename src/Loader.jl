@@ -7,7 +7,9 @@ This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
-#=
+"""
+    Loader
+
 The loader assumes the records are delivered using a standard
 directory structure that is encoded here.  The structure is
 
@@ -21,8 +23,7 @@ directory structure that is encoded here.  The structure is
 - spoiled_ballots/*.json: Spoiled ballots (may be missing)
 - encrypted_tally: Encrypted tally
 - tally.json: The tally
-=#
-
+"""
 module Loader
 
 import JSON

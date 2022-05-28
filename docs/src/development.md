@@ -29,6 +29,7 @@ The loader describes the expected directory structure of an election
 record.
 
 ```@docs
+Loader
 load(path::AbstractString)
 ```
 

@@ -52,7 +52,8 @@ function verify_substitute_decryptions(er::Election_record,
     else
         comment = "$name substitute decryptions are incorrect."
     end
-    answer(step, bits2items(acc), "Correctness of substitute decryptions",
+    answer(step, bits2items(acc),
+           "Correctness of substitute data for missing guardian",
            comment, count, failed)
 end
 
