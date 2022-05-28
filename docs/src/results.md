@@ -50,9 +50,13 @@ in JSON format.  The record has the following form.
 
 - `election_scope_id` [string] Election identifier
 
-- `start_date` [string] Start time of election
+- `start_date` [ISO date time as string] Start time of election
 
-- `end_date` [string] End time of election
+- `end_date` [ISO date time as string] End time of election
+
+- `verifier` [string] Name of verifier
+
+- `run_date` [UTC ISO date time as string] Verifier run time
 
 - `verified` [boolean] Did election record verify?
 
@@ -81,6 +85,8 @@ Each answer has the following form.
   "election_scope_id": "jefferson-county-primary",
   "start_date": "2020-03-01T08:00:00-05:00",
   "end_date": "2020-03-01T20:00:00-05:00",
+  "verifier": "MITRE ElectionGuard Verifier",
+  "run_date": "2022-05-27T20:54:14.689",
   "verified": false,
   "answers": [
     {

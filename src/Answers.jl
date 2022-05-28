@@ -36,6 +36,8 @@ export A, B, C, D, E, F, G, H, I, J, K
 
 import Base.show
 
+using Dates
+
 using ..Datatypes
 
 "Step answer - do not use as a constructor"
@@ -63,6 +65,8 @@ struct Verification_record
     election_scope_id::String   # Election scope id from manifest
     start_date::String          # Election start date from manifest
     end_date::String            # Election end date from manifest
+    verifier::String            # Name of verifier
+    run_date::String            # Date of verifier run
     verified::Bool              # Did election record verify?
     answers::Vector{Answer}     # Answers
 end
@@ -104,6 +108,8 @@ function verification_record(er::Election_record,
                         manifest["election_scope_id"],
                         manifest["start_date"],
                         manifest["end_date"],
+                        "MITRE ElectionGuard Verifier",
+                        string(now(Dates.UTC)),
                         verified,
                         anss)
 end
