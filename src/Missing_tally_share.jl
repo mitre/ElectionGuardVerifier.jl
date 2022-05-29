@@ -51,7 +51,7 @@ function verify_missing_tally_share(er::Election_record,
         name = "tally"
         step = 10
     else
-        name = "spoiled ballot"
+        name = "spoiled ballot " * tally.object_id
         step = 13
     end
     if failed == 0

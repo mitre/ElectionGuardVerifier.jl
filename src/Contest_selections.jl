@@ -29,7 +29,7 @@ function verify_contest_selections(er::Election_record,
         name = "Tally"
         step = 11
     else
-        name = "Spoiled ballot"
+        name = "Spoiled ballot " * tally.object_id
         step = 13
     end
     comment = "$name selections agree with the manifest."
