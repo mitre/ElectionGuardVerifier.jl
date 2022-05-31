@@ -19,6 +19,7 @@ export verify_ballot_aggregation
 
 "7. Correctness of Ballot Aggregation"
 function verify_ballot_aggregation(er::Election_record)::Answer
+    acc = 0                     # Accumulated bit items
     count = 0                   # Records checked
     failed = 0
     # for each contest
@@ -27,7 +28,16 @@ function verify_ballot_aggregation(er::Election_record)::Answer
         for (_, sel) in c.selections
             count += 1
             sum = sum_votes(er, c.object_id, sel.object_id)
-            if !same(sum, sel.message)
+            mismatch = false
+            if sum.pad != sel.message.pad
+                mismatch = true
+                acc |= A
+            end
+            if sum.data != sel.message.data
+                mismatch = true
+                acc |= B
+            end
+            if mismatch
                 failed += 1
             end
         end
@@ -38,7 +48,7 @@ function verify_ballot_aggregation(er::Election_record)::Answer
         name = er.tally.object_id
         comment = "Tally $name ballot aggregation is incorrect."
     end
-    answer(7, "", "Correctness of ballot aggregation",
+    answer(7, bits2items(acc), "Correctness of ballot aggregation",
            comment, count, failed)
 end
 
