@@ -60,10 +60,17 @@ function are_vote_limits_correct(er::Election_record,
         are_vote_limits_correct_g(er, votes_allowed, contest)
 end
 
+const DEFAULT_VOTES_ALLOWED = 1000000
+
 function get_votes_allow(contests::Vector{Any}, contest::Contest)::Int64
     for c in contests
         if c["object_id"] == contest.object_id
-            return c["votes_allowed"]
+            va = c["votes_allowed"]
+            if va == nothing
+                return DEFAULT_VOTES_ALLOWED
+            else
+                return va
+            end
         end
     end
     -1

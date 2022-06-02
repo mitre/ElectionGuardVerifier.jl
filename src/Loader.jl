@@ -159,7 +159,7 @@ function load_ballot_selection(dict)
                      dict["is_placeholder_selection"],
                      load_disjuctive_proof(dict["proof"]),
                      load_ciphertext(dict["ciphertext"]),
-                     dict["extended_data"])
+                     get(dict, "extended_data", nothing))
 end
 
 function load_constant_proof(dict)
