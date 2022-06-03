@@ -38,47 +38,47 @@ include("Answers.jl")
 
 using .Answers: Answer, Verification_record, verification_record
 
-# 1. Parameter validation
+# Parameter validation
 include("Standard_constants.jl")
 include("Params.jl")
 
-# 2. Guardian Public-key Validation
+# Guardian Public-key Validation
 include("Guardian_pubkey.jl")
 
-# 3. Election Public-Key Validation
+# Election Public-Key Validation
 include("Election_pubkey.jl")
 
-# 4. Selection Encryptions  Validation
+# Correctness of Selection Encryptions
 include("Selection_encryptions.jl")
 
-# 5. Adherence to vote limits
+# Adherence to vote limits
 include("Vote_limits.jl")
 
-# 5. Check for Duplicate Ballots
+# Check for Duplicate Ballots
 include("Duplicate_ballots.jl")
 
-# 7. Correctness of Ballot Aggregation
+# Correctness of Ballot Aggregation
 include("Ballot_aggregation.jl")
 
-# 8. Correctness of Partial Decryptions
+# Correctness of Partial Decryptions
 include("Partial_decryptions.jl")
 
-# 9. Correctness of Substitute Decryptions
+# Correctness of Substitute Decryptions
 include("Substitute_decryptions.jl")
 
-# 10. Correctness of Coefficients
+# Correctness of Coefficients
 include("Coefficients.jl")
 
-# 10. Missing Tally Share
+# Missing Tally Share
 include("Missing_tally_share.jl")
 
-# 11. Validation of Correct Decryption of Tallies
+# Validation of Correct Decryption of Tallies
 include("Tally_decryptions.jl")
 
-# 11. Validation of Contest Selections with the Manifest
+# Validation of Contest Selections with the Manifest
 include("Contest_selections.jl")
 
-# 12. Validation of Correct Decryption of Spoiled Ballots
+# Validation of Correct Decryption of Spoiled Ballots
 include("Spoiled_ballots.jl")
 
 function print_push!(as::Vector{Answer}, a::Answer)
@@ -113,6 +113,7 @@ function verify(er::Election_record)::Verification_record
         verify_tally_decryptions(er, er.tally, true))
     print_push!(as, Contest_selections.
         verify_contest_selections(er, er.tally, true))
+    println("12. Correctness of partial decryptions of extended data not checked.")
     append!(as, Spoiled_ballots.verify_spoiled_ballots(er))
     verification_record(er, as)
 end

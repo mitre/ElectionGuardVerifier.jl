@@ -1,6 +1,11 @@
 # 7. Correctness of Ballot Aggregation
 
-# Ensure the tally is the sum of the individual votes.
+#=
+Ensure the tally is the sum of the individual votes.
+
+The code uses mapreduce to extract votes from each ballot contest
+selection and then combines all of the results to produce an answer.
+=#
 
 #=
 Copyright (c) 2022 The MITRE Corporation
@@ -14,6 +19,8 @@ module Ballot_aggregation
 using ..Datatypes
 using ..Answers
 using ..Utils
+
+import Base.mapreduce
 
 export verify_ballot_aggregation
 
@@ -56,17 +63,22 @@ end
 function sum_votes(er::Election_record,
                    contest::String,
                    selection::String,
-                   )::Union{Ciphertext, Nothing}
-    votes = one_ct
-    for ballot in er.submitted_ballots
-        # Omit ballot if it is spoiled.
-        if !isspoiled(ballot.object_id, contest,
-                      selection, er.spoiled_ballots)
-            vote = encrypted_vote(contest, selection, ballot)
-            votes = incr_votes(votes, vote, er.constants.p )
-        end
+                   )::Ciphertext
+    mapreduce(ballot -> vote(er, contest, selection, ballot),
+              (v1, v2) -> prod_ct(v1, v2, er.constants.p),
+              er.submitted_ballots)
+end
+
+function vote(er::Election_record,
+              contest::String,
+              selection::String,
+              ballot::Submitted_ballot)::Ciphertext
+    if isspoiled(ballot.object_id, contest,
+                 selection, er.spoiled_ballots)
+        one_ct
+    else
+        encrypted_vote(contest, selection, ballot)
     end
-    votes
 end
 
 # Is ballot with given object_id spoiled?
@@ -87,22 +99,11 @@ function isspoiled(object_id::String,
     false
 end
 
-# Add in one vote.  When the vote is nothing, ignore vote
-function incr_votes(votes::Ciphertext,
-                    vote::Union{Ciphertext, Nothing},
-                    p::BigInt)::Ciphertext
-    if vote == nothing
-        votes
-    else
-        prod_ct(votes, vote, p)
-    end
-end
-
-# Return the encrypted vote or nothing if it is missing.
+# Return the encrypted vote or one if it is missing.
 function encrypted_vote(contest::String,
                         selection::String,
                         ballot::Submitted_ballot
-                        )::Union{Ciphertext, Nothing}
+                        )::Ciphertext
     # Find contest
     for c in ballot.contests
         if c.object_id == contest
@@ -111,18 +112,18 @@ function encrypted_vote(contest::String,
                 if sel.object_id == selection
                     # ensure vote is not a placeholder selection
                     if sel.is_placeholder_selection
-                        return nothing
+                        return one_ct
                     else
                         return sel.ciphertext
                     end
                 end
             end
             # No selection found
-            return nothing
+            return one_ct
         end
     end
     # No contest found
-    nothing
+    one_ct
 end
 
 end

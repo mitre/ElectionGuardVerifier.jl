@@ -1,6 +1,11 @@
 # 5. Adherence to vote limits
 
-# Ensure each contest in each ballot meets vote limits.
+#=
+Ensure each contest in each ballot meets vote limits.
+
+The code uses mapreduce to apply a check to each ballot and then
+combines all of the results to produce an answer.
+=#
 
 #=
 Copyright (c) 2022 The MITRE Corporation
@@ -16,35 +21,63 @@ using ..Answers
 using ..Utils
 using ..Hash
 
+import Base.mapreduce
+
 export verify_vote_limits
 
 "5. Adherence to Vote Limits"
 function verify_vote_limits(er::Election_record)::Answer
-    acc = 0                     # Accumulated bit items
-    comment = "Vote limits are adhered to."
-    count = 0                   # Records checked
-    failed = 0
     contests = er.manifest["contests"]
-    for ballot in er.submitted_ballots
-        count += 1
-        failed_yet = false      # Ensure at most one failure
-        for contest in ballot.contests
-            bits = are_vote_limits_correct(er, contests, contest)
-            if bits != 0
-                name = ballot.object_id
-                id = contest.object_id
-                comment =
-                    "Contest $id in ballot $name fails to adhere to vote limits."
-                acc |= bits
-                if !failed_yet
-                    failed += 1
-                    failed_yet = true
-                end
-            end
+    accum = mapreduce(ballot -> verify_a_vote_limit(er, contests, ballot),
+                      combine, er.submitted_ballots)
+    comment = accum.comment
+    if comment == ""
+        comment = "Vote limits are adhered to."
+    end
+    answer(5, bits2items(accum.acc), "Adherence to vote limits",
+           comment, accum.count, accum.failed)
+end
+
+"Accumulated value for mapreduce"
+struct Accum
+    comment::String             # Answer comment
+    acc::Int64                  # Accumulated bit items
+    count::Int64                # Records checked
+    failed::Int64               # Failed checks
+end
+
+"Combine accumulated values."
+function combine(accum1::Accum, accum2::Accum)::Accum
+    # Ensure comment is nonempty if one input comment is nonempty.
+    if accum1.comment == ""
+        comment = accum2.comment
+    else
+        comment = accum1.comment
+    end
+    Accum(comment,
+          accum1.acc | accum2.acc,
+          accum1.count + accum2.count,
+          accum1.failed + accum2.failed)
+end
+
+function verify_a_vote_limit(er::Election_record,
+                             contests::Vector{Any},
+                             ballot::Submitted_ballot)::Accum
+    acc = 0                     # Accumulated bit items
+    comment = ""                # Answer check
+    failed = false
+    for contest in ballot.contests
+        bits = are_vote_limits_correct(er, contests, contest)
+        if bits != 0
+            name = ballot.object_id
+            id = contest.object_id
+            comment =
+                "Contest $id in ballot $name fails to adhere to vote limits."
+            acc |= bits
+            failed = true
         end
     end
-    answer(5, bits2items(acc), "Adherence to vote limits",
-           comment, count, failed)
+    Accum(comment, acc, 1, failed ? 1 : 0)
 end
 
 function are_vote_limits_correct(er::Election_record,

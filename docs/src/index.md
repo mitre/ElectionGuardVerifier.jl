@@ -12,11 +12,11 @@ ElectionGuard uses cryptography to ensure that
  - anyone can verify that the recorded votes have been correctly
    tallied.
 
-Version 0.8.0 of the MITRE ElectionGuard Verifier provides the means to
-validate specification [version 1.0
+Version 0.9.0 of the MITRE ElectionGuard Verifier provides the means to
+validate specification [version 1.0?
 ElectionGuard](https://www.electionguard.vote/spec/) election records
-that use version [0.95 data
-formats](https://github.com/microsoft/electionguard/tree/main/data/0.95.0)
+that use version [1.0 data
+formats](https://github.com/microsoft/electionguard/tree/main/data/1.0.0-preview-1)
 in an easy to use package.
 
 ## Design Goal

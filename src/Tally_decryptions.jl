@@ -60,7 +60,7 @@ end
 function are_tally_decryptions_correct_a(er::Election_record,
                                          sel::Tally_selection)::Int64
     c = er.constants
-    decr = BigInt(1)
+    decr = one(BigInt)
     for shr in sel.shares
         decr = mod(decr * shr.share, c.p)
     end

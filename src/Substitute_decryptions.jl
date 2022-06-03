@@ -1,4 +1,4 @@
-# 9. Correctness of Substitute Decryptions
+# 9. Correctness of Substitute Data for Missing Guardians
 
 #=
 Copyright (c) 2022 The MITRE Corporation
@@ -16,7 +16,7 @@ using ..Hash
 
 export verify_substitute_decryptions
 
-"9. Correctness of Substitute Decryptions"
+"9. Correctness of Substitute Data for Missing Guardians"
 function verify_substitute_decryptions(er::Election_record,
                                        tally::Tally,
                                        is_tally)::Answer
@@ -53,7 +53,7 @@ function verify_substitute_decryptions(er::Election_record,
         comment = "$name substitute decryptions are incorrect."
     end
     answer(step, bits2items(acc),
-           "Correctness of substitute data for missing guardian",
+           "Correctness of substitute data for missing guardians",
            comment, count, failed)
 end
 
@@ -111,7 +111,7 @@ function are_substitute_decryptions_correct_d(er::Election_record,
     p = rp.proof
     ell = guardian(er, rp.guardian_id).sequence_order
     g = guardian(er, rp.missing_guardian_id)
-    K = BigInt(1)
+    K = one(BigInt)
     # Vector indexing in Julia is one based.
     for (j, p) in enumerate(g.election_proofs)
         ell_sup_j = BigInt(ell ^ (j - 1))

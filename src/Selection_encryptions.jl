@@ -1,6 +1,11 @@
 # 4. Correctness of Selection Encryptions
 
-# Ensure the selection encryptions are valid
+#=
+Ensure the selection encryptions in each ballot are valid.
+
+The code uses mapreduce to apply a check to each ballot and then
+combines all of the results to produce an answer.
+=#
 
 #=
 Copyright (c) 2022 The MITRE Corporation
@@ -16,34 +21,61 @@ using ..Answers
 using ..Utils
 using ..Hash
 
+import Base.mapreduce
+
 export verify_selection_encryptions
 
 "4. Correctness of Selection Encryptions"
 function verify_selection_encryptions(er::Election_record)::Answer
-    acc = 0                     # Accumulated bit items
-    comment = "Selection encryptions are valid."
-    count = 0                   # Records checked
-    failed = 0
-    for ballot in er.submitted_ballots
-        count += 1
-        failed_yet = false      # Ensure at most one failure
-        for contest in ballot.contests
-            for sel in contest.ballot_selections
-                bits = is_selection_encryption_correct(er, sel)
-                if bits != 0
-                    name = ballot.object_id
-                    comment = "Ballot $name has a bad selection encryption."
-                    acc |= bits
-                    if !failed_yet
-                        failed += 1
-                        failed_yet = true
-                    end
-                end
+    accum = mapreduce(ballot -> verify_ballot(er, ballot),
+                      combine, er.submitted_ballots)
+    comment = accum.comment
+    if comment == ""
+        comment = "Selection encryptions are valid."
+    end
+    answer(4, bits2items(accum.acc), "Correctness of selection encryption",
+           comment, accum.count, accum.failed)
+end
+
+"Accumulated value for mapreduce"
+struct Accum
+    comment::String             # Answer comment
+    acc::Int64                  # Accumulated bit items
+    count::Int64                # Records checked
+    failed::Int64               # Failed checks
+end
+
+"Combine accumulated values."
+function combine(accum1::Accum, accum2::Accum)::Accum
+    # Ensure comment is nonempty if one input comment is nonempty.
+    if accum1.comment == ""
+        comment = accum2.comment
+    else
+        comment = accum1.comment
+    end
+    Accum(comment,
+          accum1.acc | accum2.acc,
+          accum1.count + accum2.count,
+          accum1.failed + accum2.failed)
+end
+
+"Verify one ballot"
+function verify_ballot(er::Election_record, ballot::Submitted_ballot)::Accum
+    acc = 0                 # Accumulated bit items
+    comment = ""            # Answer comment
+    failed = false
+    for contest in ballot.contests
+        for sel in contest.ballot_selections
+            bits = is_selection_encryption_correct(er, sel)
+            if bits != 0
+                name = ballot.object_id
+                comment = "Ballot $name has a bad selection encryption."
+                acc |= bits
+                failed = true
             end
         end
     end
-    answer(4, bits2items(acc), "Correctness of selection encryption",
-           comment, count, failed)
+    Accum(comment, acc, 1, failed ? 1 : 0)
 end
 
 function is_selection_encryption_correct(er::Election_record,

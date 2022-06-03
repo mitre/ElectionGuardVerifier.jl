@@ -1,7 +1,7 @@
 name = "ElectionGuardVerifier"
 uuid = "32794a08-387a-43c1-9ae7-2cc8b0ba3488"
 authors = ["John D. Ramsdell <ramsdell@mitre.org>", "Moses D. Liskov <mliskov@mitre.org>"]
-version = "0.8.0"
+version = "0.9.0"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"

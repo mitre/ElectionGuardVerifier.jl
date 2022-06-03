@@ -47,7 +47,7 @@ function eg_hash(q::BigInt, x, xs...)::BigInt
     # mod(to_big(digest!(ctx)), q)
     mod(to_big(digest!(ctx)), q)
     # Use this to see what goes wrong with a bad modulus
-    # mod(to_big(digest!(ctx)), q - BigInt(1))
+    # mod(to_big(digest!(ctx)), q - one(BigInt))
 end
 
 "Hash a single item."
