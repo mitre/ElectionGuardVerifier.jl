@@ -10,63 +10,68 @@ modify it under the terms of the MIT License.
 module Tally_decryptions
 
 using ..Datatypes
+using ..Answers
 
-export check_tally_decryptions
+export verify_tally_decryptions
 
 "11. Validation of Correct Decryption of Tallies"
-function check_tally_decryptions(er::Election_record,
-                                 tally::Tally,
-                                 is_tally::Bool)::Bool
-    decrypts = 0
-    good_decrypts = 0
+function verify_tally_decryptions(er::Election_record,
+                                  tally::Tally,
+                                  is_tally::Bool)::Answer
+    acc = 0                     # Accumulated item bits
+    count = 0                   # Records checked
+    failed = 0
     # for each contest
     for (_, c) in tally.contests
         # for each selection in contest
         for (_, sel) in c.selections
-            decrypts += 1
-            if are_tally_decryptions_correct(er, sel)
-                good_decrypts += 1
+            count += 1
+            bits = are_tally_decryptions_correct(er, sel)
+            if bits != 0
+                failed += 1
+                acc |= bits
             end
         end
     end
     if is_tally
         name = "Tally"
+        step = 11
     else
-        name = "Spoiled ballot"
+        name = "Spoiled ballot " * tally.object_id
+        step = 13
     end
-    if decrypts == good_decrypts
-        println("11. $name decryptions are correct.")
-        true
+    if failed == 0
+        comment = "$name decryptions are correct."
     else
-        println("11. $name decryptions are incorrect,")
-        good_decrypts = decrypts - good_decrypts
-        println("   $good_decrypts out of $decrypts incorrect.")
-        false
+        comment = "$name decryptions are incorrect."
     end
+    answer(step, bits2items(acc),
+           "Validation of correct decryption of tallies",
+           comment, count, failed)
 end
 
 function are_tally_decryptions_correct(er::Election_record,
-                                       sel::Tally_selection)::Bool
-    are_tally_decryptions_correct_a(er, sel) &&
+                                       sel::Tally_selection)::Int64
+    are_tally_decryptions_correct_a(er, sel) |
         are_tally_decryptions_correct_b(er, sel)
 end
 
 # B = (M * prod(M_i) mod p
 function are_tally_decryptions_correct_a(er::Election_record,
-                                         sel::Tally_selection)::Bool
+                                         sel::Tally_selection)::Int64
     c = er.constants
-    decr = BigInt(1)
+    decr = one(BigInt)
     for shr in sel.shares
         decr = mod(decr * shr.share, c.p)
     end
-    sel.message.data == mod(sel.value * decr, c.p)
+    sel.message.data == mod(sel.value * decr, c.p) ? 0 : A
 end
 
 # M = g^t mod p
 function are_tally_decryptions_correct_b(er::Election_record,
-                                         sel::Tally_selection)::Bool
+                                         sel::Tally_selection)::Int64
     c = er.constants
-    sel.value == powermod(c.g, sel.tally, c.p)
+    sel.value == powermod(c.g, sel.tally, c.p) ? 0 : B
 end
 
 end

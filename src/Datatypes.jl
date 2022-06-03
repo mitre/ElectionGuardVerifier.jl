@@ -7,31 +7,17 @@ This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
-#=
+"""
+    Datatypes
+
 This module contains the structures that appear in the JSON data files
 that make up an ElectionGuard election record.  The field names in
 structs are the field names that appear in the JSON file with the
 exception of constants.  The use of constants is too ubiquitous to use
 the verbose field names.
 
-In Julia, a field in a struct may optionally contain a type
-specification.  This type information is valuable and should be
-included in future ElectionGuard specifications.
-
-A field is associated with a variable in the spec via a comment.  This
-association is the crucial link that must be made for implementors.
-Note that v1.0 spec is at odds with what is within.  For example, the
-spec makes no mention of recovered_parts.
-
 To see the structure of the data, it is best that you read the structs
 in this file in reverse order.
-=#
-
-"""
-    Datatypes
-
-Datatypes contains structs that reflect the contents of JSON
-files that make up election records.
 """
 module Datatypes
 
@@ -43,7 +29,7 @@ export Election_record,
 
     Encryption_device,
 
-    Ciphertext,
+    Ciphertext, Data_ciphertext,
 
     Submitted_ballot, Contest, Ballot_selection,
     Disjunctive_proof, Constant_proof,
@@ -95,7 +81,7 @@ end
 # Content of coefficients.json
 
 struct Coefficients
-    coefficients::Vector{BigInt}
+    coefficients::Dict{String, BigInt}
 end
 
 # For guardian.json
@@ -132,6 +118,14 @@ end
 struct Ciphertext
     pad::BigInt
     data::BigInt
+end
+
+# Encryption with MAC
+
+struct Data_ciphertext
+    pad::BigInt
+    data::BigInt
+    mac::BigInt
 end
 
 # For submitted_ballot.json
@@ -200,6 +194,7 @@ end
 
 struct Encrypted_tally_selection
     object_id::String
+    sequence_order::Int64
     description_hash::BigInt
     ciphertext::Ciphertext
 end

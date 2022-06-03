@@ -45,6 +45,8 @@ function eg_hash(q::BigInt, x, xs...)::BigInt
     update!(ctx, vbar_bytestring)
     # Convert hash to a BigInt assuming a big endian byte ordering.
     mod(to_big(digest!(ctx)), q)
+    # Use this to see what goes wrong with a bad modulus
+    # mod(to_big(digest!(ctx)), q - one(BigInt))
 end
 
 "Hash a single item."

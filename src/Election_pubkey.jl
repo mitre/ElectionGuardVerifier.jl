@@ -10,37 +10,36 @@ modify it under the terms of the MIT License.
 module Election_pubkey
 
 using ..Datatypes
+using ..Answers
 using ..Hash
 
-export check_election_pubkey
+export verify_election_pubkey
 
 " 3. Election Public-Key Validation"
-function check_election_pubkey(er::Election_record)::Bool
-    ans = true
+function verify_election_pubkey(er::Election_record)::Answer
+    bits = 0
 
     # A. K = prod(K_i) mod p
     keys = map(g -> g.election_public_key, er.guardians)
     if mod(prod(keys), er.constants.p) != er.context.elgamal_public_key
-        println(" 3A. Election joint election pubkey is not valid.")
-        ans = false
+        bits |= A
     end
 
     # B. Qbar = H(Q, K)
-    #! Spec conflict
-    # B. Qbar = H(Q, ???)
     qbar = eg_hash(er.constants.q,
                    er.context.crypto_base_hash,
-                   # er.context.elgamal_public_key)
                    er.context.commitment_hash)
     if qbar != er.context.crypto_extended_base_hash
-        println(" 3B. Election extended base hash is not valid.")
-        ans = false
+        bits |= B
     end
 
-    if ans
-        println(" 3. Election pubkey is valid.")
+    if bits == 0
+        answer(3, "", "Election public-key validation",
+               "Election pubkey is valid.", 1, 0)
+    else
+        answer(3, bits2items(bits), "Election public-key validation",
+               "Election pubkey is invalid.", 1, 1)
     end
-    ans
 end
 
 end

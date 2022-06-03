@@ -73,7 +73,7 @@ end
 Is 0 ≤ x < p and (x ^ q) mod p == 1?
 """
 function within_mod(x::BigInt, q::BigInt, p::BigInt)::Bool
-    within(x, p) && powermod(x, q, p) == BigInt(1)
+    within(x, p) && powermod(x, q, p) == one(BigInt)
 end
 
 """
@@ -81,7 +81,7 @@ end
 
 one_ct = Ciphertext(1, 1)
 """
-const one_ct = Ciphertext(BigInt(1), BigInt(1))
+const one_ct = Ciphertext(one(BigInt), one(BigInt))
 
 """
     prod_ct(x1::Ciphertext, x2::Ciphertext, p::BigInt)::Ciphertext

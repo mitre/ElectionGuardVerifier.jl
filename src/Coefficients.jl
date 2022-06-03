@@ -1,4 +1,4 @@
-# 10. Correctness of Coefficients
+# 10A. Correctness of Coefficients
 
 #=
 Copyright (c) 2022 The MITRE Corporation
@@ -10,15 +10,20 @@ modify it under the terms of the MIT License.
 module Coefficients
 
 using ..Datatypes
+using ..Answers
 
-export check_coefficients
+export verify_coefficients
 
-"10. Correctness of Coefficients"
-function check_coefficients(er::Election_record)::Bool
-    ans = true
+"10A. Correctness of Coefficients"
+function verify_coefficients(er::Election_record)::Answer
+    comment = "Coefficients validated."
+    count = 0                   # Records checked
+    failed = 0                  # Failure count
     c = er.constants
     coefs = er.coefficients.coefficients
-    for (ell, w_ell) = enumerate(coefs)
+    for (ell, w_ell) in coefs
+        count += 1
+        ell = parse(Int64, ell)
         prod_j = 1
         prod_j_minus_ell = 1
         for j in 1:length(coefs)
@@ -29,14 +34,13 @@ function check_coefficients(er::Election_record)::Bool
         end
         if mod(BigInt(prod_j), c.q) !=
             mod(w_ell * BigInt(prod_j_minus_ell), c.q)
-            println("10. Coefficient check for guardian $ell failed.")
-            ans = false
+            failed += 1
+            comment = "Coefficient check for guardian $ell failed."
         end
     end
-    if ans
-        println("10. Coefficients validated.")
-    end
-    ans
+    answer(10, failed == 0 ? "" : "A",
+           "Correctness of construction of replacement partial decryption",
+           comment, count, failed)
 end
 
 end

@@ -12,20 +12,23 @@ modify it under the terms of the MIT License.
 module Params
 
 using ..Datatypes
+using ..Answers
 using ..Utils: same
 using ..Standard_constants
 
-export check_params
+export verify_params
 
 "1. Parameter Validation"
-function check_params(er::Election_record)::Bool
+function verify_params(er::Election_record)::Answer
     ans = same(er.constants, constants)
     if ans
-        println(" 1. Standard parameters were found.")
+        comment = "Standard parameters were found."
+        failed = 0
     else
-        println(" 1. Non-standard parameters were found.")
+        comment = "Non-standard parameters were found."
+        failed = 1
     end
-    ans
+    answer(1, "", "Parameter verification", comment, 1, failed)
 end
 
 end

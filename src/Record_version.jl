@@ -11,9 +11,9 @@ module Record_version
 
 export check_record_version
 
-const version = "v0.95"
+const version = "1.0"
 
-"Check that the spec_version in the manifest is v0.95."
+"Check that the spec_version in the manifest is the one expected."
 function check_record_version(manifest::Dict{String, Any})::Bool
     spec_version = manifest["spec_version"]
     if spec_version == version

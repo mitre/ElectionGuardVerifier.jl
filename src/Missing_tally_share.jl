@@ -13,34 +13,35 @@ modify it under the terms of the MIT License.
 module Missing_tally_share
 
 using ..Datatypes
+using ..Answers
 using ..Utils: mulpowmod
 
-export check_missing_tally_share
+export verify_missing_tally_share
 
-"10. Missing Tally Share"
-function check_missing_tally_share(er::Election_record,
-                                   tally::Tally,
-                                   is_tally::Bool)::Bool
-    shares = 0
-    good_shares = 0
+"10B. Missing Tally Share"
+function verify_missing_tally_share(er::Election_record,
+                                    tally::Tally,
+                                    is_tally::Bool)::Answer
+    count = 0                   # Records checked
+    failed = 0
     # for each contest
     for (_, c) in tally.contests
         # for each selection in contest
         for (_, sel) in c.selections
             for share in sel.shares
                 if share.proof == nothing
-                    shares += 1
-                    prod = BigInt(1)
+                    count += 1
+                    prod = one(BigInt)
                     for (_, rp) in share.recovered_parts
-                        coef = guardian_coefficient(er, rp.guardian_id)
+                        coef = er.coefficients.coefficients[rp.guardian_id]
                         prod = mulpowmod(prod,
                                          rp.share,
                                          coef,
                                          er.constants.p)
                     end
                     # M_i == prod(M_il ^ w_l) mod p?
-                    if share.share == prod
-                        good_shares += 1
+                    if share.share != prod
+                        failed += 1
                     end
                 end
             end
@@ -48,30 +49,19 @@ function check_missing_tally_share(er::Election_record,
     end
     if is_tally
         name = "tally"
+        step = 10
     else
-        name = "spoiled ballot"
+        name = "spoiled ballot " * tally.object_id
+        step = 13
     end
-    if shares == good_shares
-        println("10. Missing $name shares are correct.")
-        true
+    if failed == 0
+        comment = "Missing $name shares are correct."
     else
-        println("10. Missing $name shares are incorrect,")
-        good_shares = shares - good_shares
-        println("    $good_shares out of $shares incorrect.")
-        false
+        comment = "Missing $name shares are incorrect."
     end
-end
-
-# It's odd that a guardian_id is a string instead of an int that
-# contains its sequence order.  For now, one has to do the following
-# search to convert from the id to the sequence order.
-function guardian_coefficient(er::Election_record, guardian::String)::BigInt
-    for g in er.guardians
-        if g.guardian_id == guardian
-            return er.coefficients.coefficients[g.sequence_order]
-        end
-    end
-    error("Guardian $guardian not found")
+    answer(step, failed == 0 ? "" : "B",
+           "Correctness of construction of replacement partial decryptions",
+           comment, count, failed)
 end
 
 end

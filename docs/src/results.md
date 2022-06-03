@@ -11,7 +11,7 @@ the line of output that says:
 1. Standard parameters were found.
 ```
 
-is the result of performing the test described in Step 1.
+is the result of performing the check described in Step 1.
 
 The verifier implements all verification steps with the follow
 exceptions:
@@ -23,22 +23,97 @@ exceptions:
  * Step 5 includes an addition check that ensures that there are no
    duplicate submitted ballots.
 
- * The spec incorrectly specifies hashes computed in six steps.
+The output provides additional information when a verification step
+fails.  Many verification steps specify an enumeration of checks, each
+labeled by a capital letter.  When a step fails, the letters
+associated with failed checks are listed after the step number.  So an
+output line that starts with
 
-   * In Step 2A, ``c_{i,j} = H(Q, K_{i,j},h_{i,j})\mod q`` should be
-     ``c_{i,j}=H(K_{i,j},h_{i,j})\mod q``.
+```
+9CD. Bla bla...
+```
 
-   * In Step 3B, ``\bar Q = H(Q, K)`` should be ``\bar Q = H(K, C)``,
-     where ``C`` is the commitment hash.
+means the check associated with items 9.C and 9.D failed.  When a step that
+contains no enumeration fails, the item X is used, as in
 
-   * In Step 4B, ``c = H(\bar Q,(\alpha,\beta),(a_0,b_0),(a_1,b_1))``
-     should be ``c = H(\bar Q,\alpha,\beta,a_0,b_0, a_1,b_1)``.
+```
+1X. Non-standard parameters were found.
+```
 
-   * In Step 5E, ``C = H(\bar Q,(A,B),(a,b))``
-     should be ``C = H(\bar Q,A,B,a,b)``.
+## Verification Record as JSON
 
-   * In Step 8C, ``c_{i} = H(\bar Q,(A,B),(a_{i},b_{i}), M_{i})``
-     should be ``c_{i} = H(\bar Q,A,B,a_{i},b_{i}, M_{i})``.
+When the `check` method is called with an addition string, the string
+names the path of an output file used to store the verification record
+in JSON format.  The record has the following form.
 
-   * In Step 9C, ``c_{i,\ell} = H(\bar Q,(A,B),(a_{i,\ell},b_{i,\ell}), M_{i,\ell})``
-     should be ``c_{i,\ell} = H(\bar Q,A,B,a_{i,\ell},b_{i,\ell}, M_{i,\ell})``.
+- `spec_version` [string] ElectionGuard specification version
+
+- `election_scope_id` [string] Election identifier
+
+- `start_date` [ISO date time as string] Start time of election
+
+- `end_date` [ISO date time as string] End time of election
+
+- `verifier` [string] Name of verifier
+
+- `run_date` [UTC ISO date time as string] Verifier run time
+
+- `verified` [boolean] Did election record verify?
+
+- `answers` [list of answer] Verification results
+
+Each answer has the following form.
+
+- `step` [int] Verification step number
+
+- `items` [string] Verification items in a step that failed ('X' is
+  used when the step has no enumerated items.)
+
+- `section` [string] Step section title
+
+- `comment` [string] Result comment
+
+- `count` [int] Number of records checked
+
+- `failed` [int] Number of checks that failed
+
+### Example
+
+```
+{
+  "spec_version": "v0.95",
+  "election_scope_id": "jefferson-county-primary",
+  "start_date": "2020-03-01T08:00:00-05:00",
+  "end_date": "2020-03-01T20:00:00-05:00",
+  "verifier": "MITRE ElectionGuard Verifier",
+  "run_date": "2022-05-27T20:54:14.689",
+  "verified": false,
+  "answers": [
+    {
+      "step": 1,
+      "items": "X",
+      "section": "Parameter verification",
+      "comment": "Non-standard parameters were found.",
+      "count": 1,
+      "failed": 1
+    },
+    {
+      "step": 2,
+      "items": "",
+      "section": "Guardian public-key validation",
+      "comment": "Guardian pubkeys are valid.",
+      "count": 5,
+      "failed": 0
+    },
+    {
+      "step": 3,
+      "items": "B",
+      "section": "Election public-key validation",
+      "comment": "Election pubkey is invalid.",
+      "count": 1,
+      "failed": 1
+    },
+    ...
+  ]
+}
+```

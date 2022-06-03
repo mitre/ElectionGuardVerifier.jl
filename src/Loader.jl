@@ -7,7 +7,9 @@ This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
-#=
+"""
+    Loader
+
 The loader assumes the records are delivered using a standard
 directory structure that is encoded here.  The structure is
 
@@ -21,8 +23,7 @@ directory structure that is encoded here.  The structure is
 - spoiled_ballots/*.json: Spoiled ballots (may be missing)
 - encrypted_tally: Encrypted tally
 - tally.json: The tally
-=#
-
+"""
 module Loader
 
 import JSON
@@ -33,14 +34,14 @@ using ..Datatypes
 using ..Record_version
 
 """
-    load_json(path; inttype=Int64)
+    load_json(path)
 
 Load JSON from a file at the given path.
 """
-function load_json(path; inttype=Int64)
+function load_json(path)
     handle = open(path)
     try
-        JSON.parse(handle, inttype=inttype)
+        JSON.parse(handle)
     finally
         close(handle)
     end
@@ -52,16 +53,16 @@ end
 
 "Load ElGamal constants."
 function load_constants(path)::Constants
-    dict = load_json(path, inttype=BigInt)
-    Constants(dict["large_prime"],
-              dict["small_prime"],
-              dict["cofactor"],
-              dict["generator"])
+    dict = load_json(path)
+    Constants(load_bigint(dict["large_prime"]),
+              load_bigint(dict["small_prime"]),
+              load_bigint(dict["cofactor"]),
+              load_bigint(dict["generator"]))
 end
 
 "Load a BigInt."
-function load_bigint(dict)
-    parse(BigInt, dict["data"], base = 16)
+function load_bigint(str)
+    parse(BigInt, str, base = 16)
 end
 
 """
@@ -83,7 +84,11 @@ end
 
 function load_coefficients(path)
     dict = load_json(path)
-    Coefficients(map(load_bigint, dict["coefficients"]))
+    coef = Dict{String, BigInt}()
+    for (key, val) in dict["coefficients"]
+        coef[key] = load_bigint(val)
+    end
+    Coefficients(coef)
 end
 
 function load_proof(dict)
@@ -126,6 +131,12 @@ function load_ciphertext(dict)
                load_bigint(dict["data"]))
 end
 
+function load_data_ciphertext(dict)
+    Data_ciphertext(load_bigint(dict["pad"]),
+                    load_bigint(dict["data"]),
+                    load_bigint(dict["mac"]))
+end
+
 function load_disjuctive_proof(dict)
     Disjunctive_proof(dict["usage"],
                       load_bigint(dict["challenge"]),
@@ -148,7 +159,7 @@ function load_ballot_selection(dict)
                      dict["is_placeholder_selection"],
                      load_disjuctive_proof(dict["proof"]),
                      load_ciphertext(dict["ciphertext"]),
-                     dict["extended_data"])
+                     get(dict, "extended_data", nothing))
 end
 
 function load_constant_proof(dict)
@@ -192,6 +203,7 @@ end
 
 function load_encrypted_tally_selection(dict)
     Encrypted_tally_selection(dict["object_id"],
+                              dict["sequence_order"],
                               load_bigint(dict["description_hash"]),
                               load_ciphertext(dict["ciphertext"]))
 end
