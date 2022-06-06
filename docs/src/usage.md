@@ -32,3 +32,13 @@ file.
     all tests, otherwise it is `false`.
 
  5. Exit Julia with `exit()` or type cntl-D.
+
+## Performance
+
+When there are a large number of ballots to verify, the performance of
+the verifier can be improved by starting Julia with many threads, such
+as with
+
+```sh
+$ julia --threads=auto
+```

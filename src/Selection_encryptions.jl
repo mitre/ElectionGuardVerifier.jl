@@ -19,16 +19,15 @@ module Selection_encryptions
 using ..Datatypes
 using ..Answers
 using ..Utils
+using ..Parallel_mapreduce
 using ..Hash
-
-import Base.mapreduce
 
 export verify_selection_encryptions
 
 "4. Correctness of Selection Encryptions"
 function verify_selection_encryptions(er::Election_record)::Answer
-    accum = mapreduce(ballot -> verify_ballot(er, ballot),
-                      combine, er.submitted_ballots)
+    accum = pmapreduce(ballot -> verify_ballot(er, ballot),
+                       combine, er.submitted_ballots)
     comment = accum.comment
     if comment == ""
         comment = "Selection encryptions are valid."
