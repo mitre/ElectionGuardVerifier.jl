@@ -30,6 +30,8 @@ using .Loader: load
 
 include("Utils.jl")
 
+include("Parallel_mapreduce.jl")
+
 include("ElGamal.jl")           # Not currently used
 
 include("Hash.jl")

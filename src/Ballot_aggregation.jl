@@ -19,8 +19,7 @@ module Ballot_aggregation
 using ..Datatypes
 using ..Answers
 using ..Utils
-
-import Base.mapreduce
+using ..Parallel_mapreduce
 
 export verify_ballot_aggregation
 
@@ -64,8 +63,8 @@ function sum_votes(er::Election_record,
                    contest::String,
                    selection::String,
                    )::Ciphertext
-    mapreduce(ballot -> vote(er, contest, selection, ballot),
-              (v1, v2) -> prod_ct(v1, v2, er.constants.p),
+    pmapreduce(ballot -> vote(er, contest, selection, ballot),
+               (v1, v2) -> prod_ct(v1, v2, er.constants.p),
               er.submitted_ballots)
 end
 

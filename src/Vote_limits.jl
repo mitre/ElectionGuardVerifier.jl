@@ -19,17 +19,16 @@ module Vote_limits
 using ..Datatypes
 using ..Answers
 using ..Utils
+using ..Parallel_mapreduce
 using ..Hash
-
-import Base.mapreduce
 
 export verify_vote_limits
 
 "5. Adherence to Vote Limits"
 function verify_vote_limits(er::Election_record)::Answer
     contests = er.manifest["contests"]
-    accum = mapreduce(ballot -> verify_a_vote_limit(er, contests, ballot),
-                      combine, er.submitted_ballots)
+    accum = pmapreduce(ballot -> verify_a_vote_limit(er, contests, ballot),
+                       combine, er.submitted_ballots)
     comment = accum.comment
     if comment == ""
         comment = "Vote limits are adhered to."
