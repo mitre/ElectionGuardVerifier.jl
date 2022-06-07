@@ -21,7 +21,7 @@ out_file = joinpath(@__DIR__, "Standard_constants.jl")
 function load_json(path)
     handle = open(path)
     try
-        JSON.parse(handle, inttype=BigInt)
+        JSON.parse(handle)
     finally
         close(handle)
     end
@@ -30,6 +30,11 @@ end
 dict = load_json(in_file)
 
 out = open(out_file, "w")
+
+"Load a BigInt."
+function load_bigint(str)
+    parse(BigInt, str, base = 16)
+end
 
 println(out, "# Standard constants")
 println(out)
@@ -50,10 +55,10 @@ println(out)
 println(out, "export constants")
 println(out)
 println(out, "const constants = Constants(")
-println(out, "  ", dict["large_prime"], ',')
-println(out, "  ", dict["small_prime"], ',')
-println(out, "  ", dict["cofactor"], ',')
-println(out, "  ", dict["generator"], ')')
+println(out, "  ", load_bigint(dict["large_prime"]), ',')
+println(out, "  ", load_bigint(dict["small_prime"]), ',')
+println(out, "  ", load_bigint(dict["cofactor"]), ',')
+println(out, "  ", load_bigint(dict["generator"]), ')')
 println(out)
 println(out, "end")
 
