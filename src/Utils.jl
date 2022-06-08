@@ -64,7 +64,7 @@ end
 Is 0 ≤ x < p?
 """
 function within(x::BigInt, p::BigInt)::Bool
-    BigInt(0) ≤ x < p
+    zero(BigInt) ≤ x < p
 end
 
 """

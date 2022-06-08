@@ -89,7 +89,7 @@ end
 
 "Convert a vector of bytes to a BigInt using a big endian byte ordering"
 function to_big(bytes::Vector{UInt8})::BigInt
-    sum = BigInt(0)
+    sum = zero(BigInt)
     for b in bytes
         sum = BigInt(256) * sum + BigInt(b)
     end
