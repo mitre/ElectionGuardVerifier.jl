@@ -94,7 +94,9 @@ end
 Verify election records.  Return a verification record.
 """
 function verify(er::Election_record)::Verification_record
-    println(er.manifest["election_scope_id"])
+    println(er.manifest.election_scope_id)
+    # Each verification function returns an answer.
+    # This function pushes each answer on vector as and prints it.
     as = Vector{Answer}()
     print_push!(as, Params.verify_params(er))
     print_push!(as, Guardian_pubkey.verify_guardian_pubkey(er))

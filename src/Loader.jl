@@ -47,8 +47,38 @@ function load_json(path)
     end
 end
 
-function load_manifest(path)
-    load_json(path)
+function load_manifest_selection(dict)::Manifest_selection
+    Manifest_selection(dict["object_id"],
+                       dict["candidate_id"])
+end
+
+const DEFAULT_VOTES_ALLOWED = 1000000
+
+function load_manifest_contest(dict)::Manifest_contest
+    selections = Dict{String, Manifest_selection}()
+    for val in map(load_manifest_selection, dict["ballot_selections"])
+        selections[val.object_id] = val
+    end
+    votes_allowed = dict["votes_allowed"]
+    if votes_allowed == nothing
+        votes_allowed = DEFAULT_VOTES_ALLOWED
+    end
+    Manifest_contest(dict["object_id"],
+                     votes_allowed,
+                     selections)
+end
+
+function load_manifest(path)::Manifest
+    dict = load_json(path)
+    contests = Dict{String, Manifest_contest}()
+    for val in map(load_manifest_contest, dict["contests"])
+        contests[val.object_id] = val
+    end
+    Manifest(dict["election_scope_id"],
+             dict["spec_version"],
+             dict["start_date"],
+             dict["end_date"],
+             contests)
 end
 
 "Load ElGamal constants."
@@ -65,6 +95,12 @@ function load_bigint(str)
     parse(BigInt, str, base = 16)
 end
 
+"Load a configuration"
+function load_configuration(dict)::Configuration
+    Configuration(dict["allow_overvotes"],
+                  dict["max_votes"])
+end
+
 """
     load_context(path)
 
@@ -79,7 +115,8 @@ function load_context(path)
             load_bigint(dict["elgamal_public_key"]),
             dict["number_of_guardians"],
             dict["quorum"],
-            dict["extended_data"])
+            dict["extended_data"],
+            load_configuration(dict["configuration"]))
 end
 
 function load_coefficients(path)
@@ -210,8 +247,8 @@ end
 
 function load_encrypted_tally_contest(dict)
     selections = Dict{String, Encrypted_tally_selection}()
-    for (key, val) in dict["selections"]
-        selections[key] = load_encrypted_tally_selection(val)
+    for (_, val) in dict["selections"] # Note key not used
+        selections[val["object_id"]] = load_encrypted_tally_selection(val)
     end
     Encrypted_tally_contest(dict["object_id"],
                             dict["sequence_order"],
@@ -222,8 +259,8 @@ end
 function load_encrypted_tally(path)
     dict = load_json(path)
     contests = Dict{String, Encrypted_tally_contest}()
-    for (key, val) in dict["contests"]
-        contests[key] = load_encrypted_tally_contest(val)
+    for (_, val) in dict["contests"] # Note key not used
+        contests[val["object_id"]] = load_encrypted_tally_contest(val)
     end
     Encrypted_tally(dict["object_id"],
                     contests)
@@ -280,8 +317,8 @@ end
 
 function load_tally_selections(dict)
     selections = Dict{String, Tally_selection}()
-    for (key, val) in dict
-        selections[key] = load_tally_selection(val)
+    for (_, val) in dict        # Note key not used
+        selections[val["object_id"]] = load_tally_selection(val)
     end
     selections
 end
@@ -293,8 +330,8 @@ end
 
 function load_tally_contests(dict)
     contests = Dict{String, Tally_contest}()
-    for (key, val) in dict
-        contests[key] = load_tally_contest(val)
+    for (_, val) in dict        # Note key not used
+        contests[val["object_id"]] = load_tally_contest(val)
     end
     contests
 end
@@ -322,7 +359,7 @@ Load election records in the given directory.
 function load(path::AbstractString)::Election_record
     path = realpath(expanduser(path))
     manifest = load_manifest(joinpath(path, "manifest.json"))
-    election_id = manifest["election_scope_id"]
+    election_id = manifest.election_scope_id
     println("Loading $election_id.")
     check_record_version(manifest)
     constants = load_constants(joinpath(path, "constants.json"))

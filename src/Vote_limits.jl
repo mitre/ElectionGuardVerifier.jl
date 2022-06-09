@@ -26,7 +26,7 @@ export verify_vote_limits
 
 "5. Adherence to Vote Limits"
 function verify_vote_limits(er::Election_record)::Answer
-    contests = er.manifest["contests"]
+    contests = er.manifest.contests
     accum = pmapreduce(ballot -> verify_a_vote_limit(er, contests, ballot),
                        combine, er.submitted_ballots)
     comment = accum.comment
@@ -60,7 +60,7 @@ function combine(accum1::Accum, accum2::Accum)::Accum
 end
 
 function verify_a_vote_limit(er::Election_record,
-                             contests::Vector{Any},
+                             contests::Dict{String, Manifest_contest},
                              ballot::Submitted_ballot)::Accum
     acc = 0                     # Accumulated bit items
     comment = ""                # Answer check
@@ -80,9 +80,9 @@ function verify_a_vote_limit(er::Election_record,
 end
 
 function are_vote_limits_correct(er::Election_record,
-                                 contests::Vector{Any},
+                                 contests::Dict{String, Manifest_contest},
                                  contest::Contest)::Int64
-    votes_allowed = get_votes_allow(contests, contest)
+    votes_allowed = contests[contest.object_id].votes_allowed
     are_vote_limits_correct_a(votes_allowed, contest) |
         are_vote_limits_correct_b(er, contest) |
         are_vote_limits_correct_c(er, contest) |
@@ -90,22 +90,6 @@ function are_vote_limits_correct(er::Election_record,
         are_vote_limits_correct_e(er, contest) |
         are_vote_limits_correct_f(er, contest) |
         are_vote_limits_correct_g(er, votes_allowed, contest)
-end
-
-const DEFAULT_VOTES_ALLOWED = 1000000
-
-function get_votes_allow(contests::Vector{Any}, contest::Contest)::Int64
-    for c in contests
-        if c["object_id"] == contest.object_id
-            va = c["votes_allowed"]
-            if va == nothing
-                return DEFAULT_VOTES_ALLOWED
-            else
-                return va
-            end
-        end
-    end
-    -1
 end
 
 function are_vote_limits_correct_a(votes_allowed::Int64,

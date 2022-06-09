@@ -104,10 +104,10 @@ function verification_record(er::Election_record,
                              anss::Vector{Answer})::Verification_record
     manifest = er.manifest
     verified = all(a -> a.failed == 0, anss)
-    Verification_record(manifest["spec_version"],
-                        manifest["election_scope_id"],
-                        manifest["start_date"],
-                        manifest["end_date"],
+    Verification_record(manifest.spec_version,
+                        manifest.election_scope_id,
+                        manifest.start_date,
+                        manifest.end_date,
                         "MITRE ElectionGuard Verifier",
                         string(now(Dates.UTC)),
                         verified,

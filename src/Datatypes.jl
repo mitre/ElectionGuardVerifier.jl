@@ -23,7 +23,9 @@ module Datatypes
 
 export Election_record,
 
-    Constants, Context, Coefficients,
+    Manifest, Manifest_contest, Manifest_selection,
+
+    Constants, Context, Configuration, Coefficients,
 
     Guardian, Schnorr_proof,
 
@@ -39,7 +41,26 @@ export Election_record,
     Tally, Tally_contest, Tally_selection,
     Tally_selection_share, Recovered_part, Chaum_Pedersen_proof
 
-# The content of manifest.json have not been analyzed.
+# The content of manifest.json is only partially extracted.
+
+struct Manifest_selection
+    object_id::String
+    candidate_id::String
+end
+
+struct Manifest_contest
+    object_id::String
+    votes_allowed::Int64
+    ballot_selections::Dict{String, Manifest_selection}
+end
+
+struct Manifest
+    election_scope_id::String
+    spec_version::String
+    start_date::String          # ISO data time
+    end_date::String            # ISO data time
+    contests::Dict{String, Manifest_contest}
+end
 
 # The content of constants.json
 
@@ -66,6 +87,11 @@ end
 
 # Content of context.json
 
+struct Configuration
+    allow_overvotes::Bool
+    max_votes::Int64
+end
+
 "The context of an election"
 struct Context
     manifest_hash::BigInt
@@ -76,6 +102,7 @@ struct Context
     number_of_guardians::Int64        # n
     quorum::Int64                     # k
     extended_data
+    configuration::Configuration
 end
 
 # Content of coefficients.json
@@ -268,7 +295,7 @@ end
 
 "Records that make up an election"
 struct Election_record
-    manifest::Dict{String, Any}
+    manifest::Manifest
     constants::Constants
     context::Context
     coefficients::Coefficients
