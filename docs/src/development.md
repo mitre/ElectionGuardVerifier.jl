@@ -105,7 +105,7 @@ returned verification record.
 
 ## Verification Routines
 
-A verification routines have a comment structure.  The structure is
+All verification routines have a comment structure.  The structure is
 revealed by studying the source code for three representative
 routines.
 

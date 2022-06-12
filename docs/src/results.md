@@ -14,14 +14,11 @@ the line of output that says:
 is the result of performing the check described in Step 1.
 
 The verifier implements all verification steps with the follow
-exceptions:
+exception:
 
  * Step 6 on the validation of ballot chaining is not implemented.
    The manifest, also known as the ballot coding file, does not say
    how to hash individual ballots.
-
- * Step 5 includes an addition check that ensures that there are no
-   duplicate submitted ballots.
 
 The output provides additional information when a verification step
 fails.  Many verification steps specify an enumeration of checks, each
