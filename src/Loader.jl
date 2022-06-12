@@ -52,7 +52,7 @@ function load_manifest_selection(dict)::Manifest_selection
                        dict["candidate_id"])
 end
 
-const DEFAULT_VOTES_ALLOWED = 1000000
+const DEFAULT_VOTES_ALLOWED = 0
 
 function load_manifest_contest(dict)::Manifest_contest
     selections = Dict{String, Manifest_selection}()

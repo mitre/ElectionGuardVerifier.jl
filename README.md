@@ -16,21 +16,39 @@ The MITRE ElectionGuard Verifier provides the means to validate
 ElectionGuard election records in an easy to use package.  It is
 written in the [Julia](https://julialang.org/) programming language.
 Follow the instructions at the Julia web site to download and install
-the system on your computer.
+the system on your computer.  The user instructions are at 
+[ElectionGuardVerifier.jl](https://mitre.github.io/ElectionGuardVerifier.jl).
 
-## User Instructions
+## Developer Instructions
 
-Eventually, this software will be made available using the Julia
-package management system.  For now, follow these instructions.
+To develop the code locally, one must install the
+[JSON](https://github.com/JuliaIO/JSON.jl) package.  From the Julia
+REPL, type `]` to enter the Pkg REPL mode and run
+
+```
+pkg> add JSON.jl
+```
+
+Type the delete key or cntl-C to exit the Pkg REPL mode.
+
+### Documentation
+
+View developer documentation
+[here](https://mitre.github.io/ElectionGuardVerifier.jl/development.html).
+
+### Modifying Code
+
+To develop code, a useful pattern is to create the `er` directory in
+the directory containing this `README`, and place sample data within
+it.
 
  1. Start Julia with the command
 
    	```sh
-	$ julia --project=PROJ_DIR
+	$ julia --project=.
 	```
-
-	where `PROJ_DIR` is the directory containing this project's
-    `Project.toml` file.
+	
+    Unix OS users should look at the `ju` script.
 
  2. Load the software with
 
@@ -41,11 +59,8 @@ package management system.  For now, follow these instructions.
  3. Load your election records with
 
     ```julia
-    julia> er = load("ER_DIR");
+    julia> er = load("er");
     ```
-
-    where `ER_DIR` is the directory containing the election records'
-    `manifest.json` file.
 
  4. Check your election records with
 
@@ -58,19 +73,22 @@ package management system.  For now, follow these instructions.
 
  5. Exit Julia with `exit()` or type cntl-D.
 
-## Debugging
+### Debugging
 
 For debugging 1.0.0-preview-1 data, I place sample data at
 `../electionguard/data/1.0.0-preview-1/sample`, start julia with
 `julia --project=.` (see the `ju` script), replace steps 2-3 with
 `include("src/Run.jl")`, and then load the data with `er=load(path);`.
 
-## Documentation
+For Windows, be sure to replace forward slash with backslash in path
+names.
 
-Build and view the documentation with:
+### Visual Studio Code
 
-``` sh
-$ cd docs
-$ julia --project make.jl
-$ open build/index.html
+VS Code has a good extension for Julia.  When the extension is
+installed, the following ensures that VS Code finds the correct Julia
+project.
+
+```sh
+$ code .
 ```

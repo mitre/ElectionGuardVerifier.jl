@@ -1,8 +1,5 @@
 # 5. Check for Duplicate Ballots
 
-# Ensure there are no duplicate ballots.  Two ballots are duplicates
-# if their crypto_hash's are the same.
-
 #=
 Copyright (c) 2022 The MITRE Corporation
 
@@ -10,6 +7,12 @@ This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
+"""
+    Duplicate_ballots
+
+Ensure there are no duplicate ballots.  Two ballots are duplicates
+if their crypto_hash's are the same.
+"""
 module Duplicate_ballots
 
 using ..Datatypes

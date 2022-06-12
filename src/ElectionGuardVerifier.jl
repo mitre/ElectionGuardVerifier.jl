@@ -7,12 +7,13 @@ This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
-#=
+"""
+    ElectionGuardVerifier
+
 This module incorporates all of the modules that make up this
 ElectionGuard verifier.  Its exported functions are expected to be
 made available by using the module in a Julia intepreter.
-=#
-
+"""
 module ElectionGuardVerifier
 
 export load, check, verify
@@ -55,9 +56,6 @@ include("Selection_encryptions.jl")
 
 # Adherence to vote limits
 include("Vote_limits.jl")
-
-# Check for Duplicate Ballots
-include("Duplicate_ballots.jl")
 
 # Correctness of Ballot Aggregation
 include("Ballot_aggregation.jl")
@@ -103,7 +101,6 @@ function verify(er::Election_record)::Verification_record
     print_push!(as, Election_pubkey.verify_election_pubkey(er))
     print_push!(as, Selection_encryptions.verify_selection_encryptions(er))
     print_push!(as, Vote_limits.verify_vote_limits(er))
-    print_push!(as, Duplicate_ballots.check_duplicate_ballots(er))
     println(" 6. Ballot chaining validity was not checked.")
     print_push!(as, Ballot_aggregation.verify_ballot_aggregation(er))
     print_push!(as, Partial_decryptions.

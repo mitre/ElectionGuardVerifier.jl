@@ -1,20 +1,21 @@
 # Hashing for ElectionGuard
 
 #=
-ElectionGuard uses SHA2 256 for hashing.  When
-there is more than one item to be hashed, it
-concatenates the items using the vertical bar
-character as a separator.  Vertical bar is also
-used to delimit the contents of the hash.
-=#
-
-#=
 Copyright (c) 2022 The MITRE Corporation
 
 This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
+"""
+    Hash
+
+ElectionGuard uses SHA2 256 for hashing.  When
+there is more than one item to be hashed, it
+concatenates the items using the vertical bar
+character as a separator.  Vertical bar is also
+used to delimit the contents of the hash.
+"""
 module Hash
 
 using SHA

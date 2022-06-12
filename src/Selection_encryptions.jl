@@ -1,19 +1,20 @@
 # 4. Correctness of Selection Encryptions
 
 #=
-Ensure the selection encryptions in each ballot are valid.
-
-The code uses mapreduce to apply a check to each ballot and then
-combines all of the results to produce an answer.
-=#
-
-#=
 Copyright (c) 2022 The MITRE Corporation
 
 This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
+"""
+    Selection_encryptions
+
+Ensure the selection encryptions in each ballot are valid.
+
+The code uses mapreduce to apply a check to each ballot and then
+combines all of the results to produce an answer.
+"""
 module Selection_encryptions
 
 using ..Datatypes
@@ -36,7 +37,11 @@ function verify_selection_encryptions(er::Election_record)::Answer
            comment, accum.count, accum.failed)
 end
 
-"Accumulated value for mapreduce"
+"""
+    Accum
+
+Accumulated value type for mapreduce
+"""
 struct Accum
     comment::String             # Answer comment
     acc::Int64                  # Accumulated bit items
@@ -44,7 +49,11 @@ struct Accum
     failed::Int64               # Failed checks
 end
 
-"Combine accumulated values."
+"""
+    combine(accum1::Accum, accum2::Accum)
+
+Combine accumulated values.
+"""
 function combine(accum1::Accum, accum2::Accum)::Accum
     # Ensure comment is nonempty if one input comment is nonempty.
     if accum1.comment == ""
@@ -58,7 +67,11 @@ function combine(accum1::Accum, accum2::Accum)::Accum
           accum1.failed + accum2.failed)
 end
 
-"Verify one ballot"
+"""
+    verify_ballot(er::Election_record, ballot::Submitted_ballot)
+
+Verify one ballot.
+"""
 function verify_ballot(er::Election_record, ballot::Submitted_ballot)::Accum
     acc = 0                 # Accumulated bit items
     comment = ""            # Answer comment

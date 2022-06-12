@@ -1,19 +1,20 @@
 # 5. Adherence to vote limits
 
 #=
-Ensure each contest in each ballot meets vote limits.
-
-The code uses mapreduce to apply a check to each ballot and then
-combines all of the results to produce an answer.
-=#
-
-#=
 Copyright (c) 2022 The MITRE Corporation
 
 This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
+"""
+    Vote_limits
+
+Ensure each contest in each ballot meets vote limits.
+
+The code uses mapreduce to apply a check to each ballot and then
+combines all of the results to produce an answer.
+"""
 module Vote_limits
 
 using ..Datatypes

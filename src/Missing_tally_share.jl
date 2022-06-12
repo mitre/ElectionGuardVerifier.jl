@@ -1,8 +1,5 @@
 # 10. Missing Tally Share
 
-# Check the second part of 10, that the missing tally shares are
-# correct.
-
 #=
 Copyright (c) 2022 The MITRE Corporation
 
@@ -10,6 +7,12 @@ This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
+"""
+    Missing_tally_share
+
+Check the second part of 10, that the missing tally shares are
+correct.
+"""
 module Missing_tally_share
 
 using ..Datatypes

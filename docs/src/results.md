@@ -33,12 +33,20 @@ output line that starts with
 9CD. Bla bla...
 ```
 
-means the check associated with items 9.C and 9.D failed.  When a step that
-contains no enumeration fails, the item X is used, as in
+means the check associated with items 9.C and 9.D failed.  Many checks
+inspect more than one record.  If say Item C only fails on one record,
+and Item D only fails on another, both Items will be reported.
+
+When a step that contains no enumeration fails, the item X is used, as
+in
 
 ```
 1X. Non-standard parameters were found.
 ```
+
+When more than one record fails during a check, the comment associated
+with the failures is non-deterministically picked from one of the
+failures.
 
 ## Verification Record as JSON
 

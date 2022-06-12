@@ -7,6 +7,12 @@ This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
+"""
+    Guardian_pubkey
+
+Verify the correct computation of the joint election public key and
+extended base hash.
+"""
 module Guardian_pubkey
 
 using ..Datatypes

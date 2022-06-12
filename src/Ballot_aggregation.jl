@@ -1,19 +1,20 @@
 # 7. Correctness of Ballot Aggregation
 
 #=
-Ensure the tally is the sum of the individual votes.
-
-The code uses mapreduce to extract votes from each ballot contest
-selection and then combines all of the results to produce an answer.
-=#
-
-#=
 Copyright (c) 2022 The MITRE Corporation
 
 This program is free software: you can redistribute it and/or
 modify it under the terms of the MIT License.
 =#
 
+"""
+    Ballot_aggregation
+
+Ensure the tally is the sum of the individual votes.
+
+The code uses mapreduce to extract votes from each ballot contest
+selection and then combines all of the results to produce an answer.
+"""
 module Ballot_aggregation
 
 using ..Datatypes

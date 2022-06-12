@@ -14,3 +14,6 @@ pkg> add https://github.com/mitre/ElectionGuardVerifier.jl
 ```
 
 Type the delete key or cntl-C to exit the Pkg REPL mode.
+
+The Pkg command `update` can be used to ensure the latest version of
+the verifier is installed.
