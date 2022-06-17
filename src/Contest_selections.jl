@@ -38,22 +38,25 @@ function verify_contest_selections(er::Election_record,
     contests = er.manifest.contests
     tally_contests = tally.contests
 
-    for (id, contest) in contests
-        count += 1
-        if !haskey(tally_contests, id)
-            comment = "$name missing contest $id."
-            acc |= C
-            failed += 1
-        else
-            tally_contest = tally_contests[id]
-            for (sel_id, sel) in contest.ballot_selections
-                failed_yet = false
-                if !haskey(tally_contest.selections, sel_id)
-                    comment = "$name missing selection $sel_id in contest $id."
-                    acc |= D
-                    if !failed_yet
-                        failed += 1
-                        failed_yet = true
+    if is_tally
+        for (id, contest) in contests
+            count += 1
+            if !haskey(tally_contests, id)
+                comment = "$name missing contest $id."
+                acc |= C
+                failed += 1
+            else
+                tally_contest = tally_contests[id]
+                for (sel_id, sel) in contest.ballot_selections
+                    failed_yet = false
+                    if !haskey(tally_contest.selections, sel_id)
+                        comment =
+                            "$name missing selection $sel_id in contest $id."
+                        acc |= D
+                        if !failed_yet
+                            failed += 1
+                            failed_yet = true
+                        end
                     end
                 end
             end

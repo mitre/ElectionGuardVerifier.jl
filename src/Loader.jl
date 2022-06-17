@@ -52,17 +52,12 @@ function load_manifest_selection(dict)::Manifest_selection
                        dict["candidate_id"])
 end
 
-const DEFAULT_VOTES_ALLOWED = 0
-
 function load_manifest_contest(dict)::Manifest_contest
     selections = Dict{String, Manifest_selection}()
     for val in map(load_manifest_selection, dict["ballot_selections"])
         selections[val.object_id] = val
     end
     votes_allowed = dict["votes_allowed"]
-    if votes_allowed == nothing
-        votes_allowed = DEFAULT_VOTES_ALLOWED
-    end
     Manifest_contest(dict["object_id"],
                      votes_allowed,
                      selections)
