@@ -32,7 +32,7 @@ using bitwise or.
 module Answers
 
 export Answer, answer, verification_record, bits2items, bitor
-export A, B, C, D, E, F, G, H, I, J, K
+export A, B, C, D, E, F, G, H, I, J, K, STEP_DELTA
 
 import Base.show
 
@@ -174,5 +174,8 @@ const J = 1 << 9
 
 "Item bit pattern for K"
 const K = 1 << 10
+
+"The value to add to get a spoiled ballot step"
+const STEP_DELTA = 5
 
 end

@@ -50,12 +50,12 @@ function verify_missing_tally_share(er::Election_record,
             end
         end
     end
+    step = 10
     if is_tally
         name = "tally"
-        step = 10
     else
         name = "spoiled ballot " * tally.object_id
-        step = 13
+        step += STEP_DELTA
     end
     if failed == 0
         comment = "Missing $name shares are correct."

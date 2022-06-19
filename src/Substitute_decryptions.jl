@@ -40,12 +40,12 @@ function verify_substitute_decryptions(er::Election_record,
             end
         end
     end
+    step = 9
     if is_tally
         name = "Tally"
-        step = 9
     else
         name = "Spoiled ballot " * tally.object_id
-        step = 13
+        step += STEP_DELTA
     end
     if failed == 0
         comment = "$name substitute decryptions are correct."

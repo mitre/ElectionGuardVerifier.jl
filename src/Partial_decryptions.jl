@@ -40,12 +40,12 @@ function verify_partial_decryptions(er::Election_record,
             end
         end
     end
+    step = 8
     if is_tally
         name = "Tally"
-        step = 8
     else
         name = "Spoiled ballot " * tally.object_id
-        step = 13
+        step += STEP_DELTA
     end
     if failed == 0
         comment = "$name partial decryptions are correct."

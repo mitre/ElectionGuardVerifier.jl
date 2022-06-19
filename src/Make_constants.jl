@@ -3,7 +3,7 @@
 # To update src/Standard_constants.jl from data/constants.json,
 # in the project directory, type:
 #
-# julia -project=. src/Make_constants.jl
+# julia --project=. src/Make_constants.jl
 
 #=
 Copyright (c) 2022 The MITRE Corporation

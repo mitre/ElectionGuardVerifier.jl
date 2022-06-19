@@ -25,12 +25,12 @@ function verify_contest_selections(er::Election_record,
     # F means an extra ballot selection is in the tally
     count = 0                   # Records checked
     failed = 0
+    step = 11
     if is_tally
         name = "Tally"
-        step = 11
     else
         name = "Spoiled ballot " * tally.object_id
-        step = 13
+        step += STEP_DELTA
     end
     comment = "$name selections agree with the manifest."
 

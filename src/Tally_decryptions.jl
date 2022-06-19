@@ -33,12 +33,12 @@ function verify_tally_decryptions(er::Election_record,
             end
         end
     end
+    step = 11
     if is_tally
         name = "Tally"
-        step = 11
     else
         name = "Spoiled ballot " * tally.object_id
-        step = 13
+        step += STEP_DELTA
     end
     if failed == 0
         comment = "$name decryptions are correct."

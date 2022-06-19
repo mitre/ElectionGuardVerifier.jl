@@ -73,6 +73,16 @@ it.
 
  5. Exit Julia with `exit()` or type cntl-D.
 
+### Script
+
+For Unix-based operating systems, create a MITRE ElectionGuard
+Verifier script with
+
+``` sh
+$ julia src/Make_script.jl > verifier
+$ chmod +x verifier
+```
+
 ### Debugging
 
 For debugging 1.0.0-preview-1 data, I place sample data at
