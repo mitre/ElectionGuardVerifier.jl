@@ -38,25 +38,25 @@ function verify_contest_selections(er::Election_record,
     contests = er.manifest.contests
     tally_contests = tally.contests
 
-    if is_tally
-        for (id, contest) in contests
-            count += 1
-            if !haskey(tally_contests, id)
+    for (id, contest) in contests
+        count += 1
+        if !haskey(tally_contests, id)
+            if is_tally
                 comment = "$name missing contest $id."
                 acc |= C
                 failed += 1
-            else
-                tally_contest = tally_contests[id]
-                for (sel_id, sel) in contest.ballot_selections
-                    failed_yet = false
-                    if !haskey(tally_contest.selections, sel_id)
-                        comment =
-                            "$name missing selection $sel_id in contest $id."
-                        acc |= D
-                        if !failed_yet
-                            failed += 1
-                            failed_yet = true
-                        end
+            end                 # Spoiled ballots may omit contests
+        else
+            tally_contest = tally_contests[id]
+            for (sel_id, sel) in contest.ballot_selections
+                failed_yet = false
+                if !haskey(tally_contest.selections, sel_id)
+                    comment =
+                        "$name missing selection $sel_id in contest $id."
+                    acc |= D
+                    if !failed_yet
+                        failed += 1
+                        failed_yet = true
                     end
                 end
             end
@@ -76,13 +76,15 @@ function verify_contest_selections(er::Election_record,
             failed_yet = false
             for (sel_id, sel) in tally_contest.selections
                 if !haskey(sels, sel_id)
-                    comment =
-                        "$name has extra selection $sel_id in contest $id."
-                    acc |= F
-                    if !failed_yet
-                        failed += 1
-                        failed_yet = true
-                    end
+                    if is_tally
+                        comment =
+                            "$name has extra selection $sel_id in contest $id."
+                        acc |= F
+                        if !failed_yet
+                            failed += 1
+                            failed_yet = true
+                        end
+                    end # Spoiled ballots may have extra placeholder selections
                 end
             end
         end
