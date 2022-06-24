@@ -83,14 +83,18 @@ end
 function are_vote_limits_correct(er::Election_record,
                                  contests::Dict{String, Manifest_contest},
                                  contest::Contest)::Int64
-    votes_allowed = contests[contest.object_id].votes_allowed
-    are_vote_limits_correct_a(votes_allowed, contest) |
-        are_vote_limits_correct_b(er, contest) |
-        are_vote_limits_correct_c(er, contest) |
-        are_vote_limits_correct_d(er, contest) |
-        are_vote_limits_correct_e(er, contest) |
-        are_vote_limits_correct_f(er, contest) |
-        are_vote_limits_correct_g(er, votes_allowed, contest)
+    if haskey(contests, contest.object_id)
+        votes_allowed = contests[contest.object_id].votes_allowed
+        are_vote_limits_correct_a(votes_allowed, contest) |
+            are_vote_limits_correct_b(er, contest) |
+            are_vote_limits_correct_c(er, contest) |
+            are_vote_limits_correct_d(er, contest) |
+            are_vote_limits_correct_e(er, contest) |
+            are_vote_limits_correct_f(er, contest) |
+            are_vote_limits_correct_g(er, votes_allowed, contest)
+    else
+        A | G
+    end
 end
 
 function are_vote_limits_correct_a(votes_allowed::Int64,
