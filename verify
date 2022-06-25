@@ -1,0 +1,19 @@
+#! /bin/sh
+
+# Verify an election record
+#
+# The first argument is the directory containing
+# the election record (. by default).
+
+exec julia --threads=auto --eval '
+if length(ARGS) == 0
+    path = "."
+else
+    path = ARGS[1]
+end
+
+using ElectionGuardVerifier
+
+er = load(path);
+
+check(er)' "$@"
