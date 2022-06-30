@@ -16,4 +16,4 @@ using ElectionGuardVerifier
 
 er = load(path);
 
-check(er)' "$@"
+println(check(er, "vr.json"))' "$@"
