@@ -1,9 +1,9 @@
 # Results
 
-The `check` function implements what is described in the version 1.0
+The `check` function implements what is described in the version 1.1
 [ElectionGuard Specification](https://www.electionguard.vote/spec/).
 To understand the output of the MITRE ElectionGuard Verifier, please
-turn to Section 6.2 titled "Verifier Steps".  The numbers in the
+turn to Section 5.2 titled "Verifier Steps".  The numbers in the
 output correspond to the steps listed in this section.  For example,
 the line of output that says:
 
@@ -13,12 +13,17 @@ the line of output that says:
 
 is the result of performing the check described in Step 1.
 
-The verifier implements all verification steps with the follow
-exception:
+The verifier implements all verification steps with the following
+exceptions:
 
- * Step 6 on the validation of ballot chaining is not implemented.
-   The manifest, also known as the ballot coding file, does not say
-   how to hash individual ballots.
+ * Step 6A on checking comfirmation codes is not implemented because
+   the specification does not describe the check with enough detail.
+
+ * Steps 17, 18, and 19 cannot be implemented because it relies on
+   data that is not presently part of an election record.
+
+ * Steps 16C, D, and E are printed as 15C, D, and E so to as make
+   better reuse of code.
 
 The output provides additional information when a verification step
 fails.  Many verification steps specify an enumeration of checks, each
@@ -33,13 +38,6 @@ output line that starts with
 means the check associated with items 9.C and 9.D failed.  Many checks
 inspect more than one record.  If say Item C only fails on one record,
 and Item D only fails on another, both Items will be reported.
-
-When a step that contains no enumeration fails, the item X is used, as
-in
-
-```
-1X. Non-standard parameters were found.
-```
 
 When more than one record fails during a check, the comment associated
 with the failures is non-deterministically picked from one of the
@@ -96,11 +94,11 @@ Each answer has the following form.
   "answers": [
     {
       "step": 1,
-      "items": "X",
+      "items": "",
       "section": "Parameter verification",
-      "comment": "Non-standard parameters were found.",
+      "comment": "Standard parameters were found.",
       "count": 1,
-      "failed": 1
+      "failed": 0
     },
     {
       "step": 2,

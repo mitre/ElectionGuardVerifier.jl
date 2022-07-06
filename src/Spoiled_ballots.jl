@@ -36,8 +36,6 @@ function verify_spoiled_ballots(er::Election_record)::Vector{Answer}
             verify_missing_tally_share(er, ballot, false))
         print_push!(as, Tally_decryptions.
             verify_tally_decryptions(er, ballot, false))
-        # Is the correct?  Couldn't a ballot be spoiled because this
-        # does not verify?
         print_push!(as, Contest_selections.
             verify_contest_selections(er, ballot, false))
     end

@@ -23,15 +23,50 @@ export verify_params
 
 "1. Parameter Validation"
 function verify_params(er::Election_record)::Answer
-    ans = same(er.constants, constants)
-    if ans
-        comment = "Standard parameters were found."
-        failed = 0
-    else
-        comment = "Non-standard parameters were found."
-        failed = 1
+    acc = 0
+    comment = "Standard parameters were found."
+    count = 0
+    failed = 0
+    er_const = er.constants
+
+    # Large prime (Item A)
+    count += 1
+    bits = er_const.p == constants.p ? 0 : A
+    if bits != 0
+        acc |= bits
+        comment = "Large prime is not standard."
+        failed += 1
     end
-    answer(1, "", "Parameter verification", comment, 1, failed)
+
+    # Small prime (Item B)
+    count += 1
+    bits = er_const.q == constants.q ? 0 : B
+    if bits != 0
+        acc |= bits
+        comment = "Small prime is not standard."
+        failed += 1
+    end
+
+    # Cofactor (Item C)
+    count += 1
+    bits = er_const.r == constants.r ? 0 : C
+    if bits != 0
+        acc |= bits
+        comment = "Cofactor is not standard."
+        failed += 1
+    end
+
+    # Generator (Item D)
+    count += 1
+    bits = er_const.g == constants.g ? 0 : D
+    if bits != 0
+        acc |= bits
+        comment = "Generator is not standard."
+        failed += 1
+    end
+
+    answer(1, bits2items(acc), "Parameter verification",
+           comment, count, failed)
 end
 
 end

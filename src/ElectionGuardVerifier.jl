@@ -57,6 +57,9 @@ include("Selection_encryptions.jl")
 # Adherence to vote limits
 include("Vote_limits.jl")
 
+# Duplicate comfirmation codes
+include("Duplicate_comf_codes.jl")
+
 # Correctness of Ballot Aggregation
 include("Ballot_aggregation.jl")
 
@@ -81,6 +84,9 @@ include("Contest_selections.jl")
 # Validation of Correct Decryption of Spoiled Ballots
 include("Spoiled_ballots.jl")
 
+# Validation of Correctness of Spoiled Ballots
+include("Well_formed_spoiled_ballots.jl")
+
 function print_push!(as::Vector{Answer}, a::Answer)
     println(a)
     push!(as, a)
@@ -101,7 +107,8 @@ function verify(er::Election_record)::Verification_record
     print_push!(as, Election_pubkey.verify_election_pubkey(er))
     print_push!(as, Selection_encryptions.verify_selection_encryptions(er))
     print_push!(as, Vote_limits.verify_vote_limits(er))
-    println(" 6. Ballot chaining validity was not checked.")
+    println("6A. Correctness of comfirmation codes was not checked.")
+    print_push!(as, Duplicate_comf_codes.verify_duplicate_comf_codes(er))
     print_push!(as, Ballot_aggregation.verify_ballot_aggregation(er))
     print_push!(as, Partial_decryptions.
         verify_partial_decryptions(er, er.tally, true))
@@ -114,8 +121,9 @@ function verify(er::Election_record)::Verification_record
         verify_tally_decryptions(er, er.tally, true))
     print_push!(as, Contest_selections.
         verify_contest_selections(er, er.tally, true))
-    println("12. Correctness of partial decryptions of extended data not checked.")
     append!(as, Spoiled_ballots.verify_spoiled_ballots(er))
+    print_push!(as, Well_formed_spoiled_ballots.
+        verify_well_formed_spoiled_ballots(er))
     verification_record(er, as)
 end
 

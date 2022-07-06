@@ -51,7 +51,7 @@ function verify_schnorr(c::Constants, ctx::Context, p::Schnorr_proof)::Int64
     verify_schnorr_a(c, ctx, p) | verify_schnorr_b(c, p)
 end
 
-"Verify that c_ij = H(K_ij, h_ij) mod q (Eq. A)."
+"Verify that c_ij = H(K_ij, h_ij) mod q (Item A)."
 function verify_schnorr_a(c::Constants, ctx::Context, p::Schnorr_proof)::Int64
     p.challenge ==
         mod(eg_hash(c.q,
@@ -60,7 +60,7 @@ function verify_schnorr_a(c::Constants, ctx::Context, p::Schnorr_proof)::Int64
             c.q) ? 0 : A
 end
 
-"Verify that g^u_ij mod p = h_ij K_ij ^ c_ij mod p (Eq. B)."
+"Verify that g^u_ij mod p = h_ij K_ij ^ c_ij mod p (Item B)."
 function verify_schnorr_b(c::Constants, p::Schnorr_proof)::Int64
     powermod(c.g, p.response, c.p) ==
         mulpowmod(p.commitment, p.public_key, p.challenge, c.p) ? 0 : B

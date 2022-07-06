@@ -19,13 +19,13 @@ export verify_election_pubkey
 function verify_election_pubkey(er::Election_record)::Answer
     bits = 0
 
-    # A. K = prod(K_i) mod p
+    # A. K = prod(K_i) mod p (Item A)
     keys = map(g -> g.election_public_key, er.guardians)
     if mod(prod(keys), er.constants.p) != er.context.elgamal_public_key
         bits |= A
     end
 
-    # B. Qbar = H(Q, K)
+    # B. Qbar = H(Q, K) (Item B)
     qbar = eg_hash(er.constants.q,
                    er.context.crypto_base_hash,
                    er.context.commitment_hash)

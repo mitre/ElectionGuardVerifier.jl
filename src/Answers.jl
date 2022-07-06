@@ -176,6 +176,6 @@ const J = 1 << 9
 const K = 1 << 10
 
 "The value to add to get a spoiled ballot step"
-const STEP_DELTA = 5
+const STEP_DELTA = 4
 
 end
