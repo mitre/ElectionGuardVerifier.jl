@@ -19,6 +19,9 @@ exceptions:
  * Step 6A on checking comfirmation codes is not implemented because
    the specification does not describe the check with enough detail.
 
+ * Step 6B on duplicate comfirmation detection checks submitted
+   ballots only.
+
  * Steps 17, 18, and 19 cannot be implemented because it relies on
    data that is not presently part of an election record.
 
