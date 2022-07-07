@@ -57,8 +57,8 @@ include("Selection_encryptions.jl")
 # Adherence to vote limits
 include("Vote_limits.jl")
 
-# Duplicate comfirmation codes
-include("Duplicate_comf_codes.jl")
+# Duplicate confirmation codes
+include("Duplicate_conf_codes.jl")
 
 # Correctness of Ballot Aggregation
 include("Ballot_aggregation.jl")
@@ -107,8 +107,8 @@ function verify(er::Election_record)::Verification_record
     print_push!(as, Election_pubkey.verify_election_pubkey(er))
     print_push!(as, Selection_encryptions.verify_selection_encryptions(er))
     print_push!(as, Vote_limits.verify_vote_limits(er))
-    println("6A. Correctness of comfirmation codes was not checked.")
-    print_push!(as, Duplicate_comf_codes.verify_duplicate_comf_codes(er))
+    println("6A. Correctness of confirmation codes was not checked.")
+    print_push!(as, Duplicate_conf_codes.verify_duplicate_conf_codes(er))
     print_push!(as, Ballot_aggregation.verify_ballot_aggregation(er))
     print_push!(as, Partial_decryptions.
         verify_partial_decryptions(er, er.tally, true))

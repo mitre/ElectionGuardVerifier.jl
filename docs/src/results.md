@@ -16,10 +16,10 @@ is the result of performing the check described in Step 1.
 The verifier implements all verification steps with the following
 exceptions:
 
- * Step 6A on checking comfirmation codes is not implemented because
+ * Step 6A on checking confirmation codes is not implemented because
    the specification does not describe the check with enough detail.
 
- * Step 6B on duplicate comfirmation detection checks submitted
+ * Step 6B on duplicate confirmation detection checks submitted
    ballots only.
 
  * Steps 17, 18, and 19 cannot be implemented because it relies on

@@ -1,4 +1,4 @@
-# 6A. Check Comfirmation Codes
+# 6A. Check Confirmation Codes
 
 #=
 Copyright (c) 2022 The MITRE Corporation
@@ -8,14 +8,14 @@ modify it under the terms of the MIT License.
 =#
 
 """
-    Comfirmation_codes
+    Confirmation_codes
 
-Ensure each comfirmation code is computed correctly
+Ensure each confirmation code is computed correctly
 
 The code uses mapreduce to apply a check to each ballot and then
 combines all of the results to produce an answer.
 """
-module Comfirmation_codes
+module Confirmation_codes
 
 using ..Datatypes
 using ..Answers
@@ -23,18 +23,18 @@ using ..Utils
 using ..Parallel_mapreduce
 using ..Hash
 
-export verify_comfirmation_codes
+export verify_confirmation_codes
 
-"6A. Verify comfirmation codes"
-function verify_comfirmation_codes(er::Election_record)::Answer
+"6A. Verify confirmation codes"
+function verify_confirmation_codes(er::Election_record)::Answer
     q = er.constants.q
-    accum = pmapreduce(ballot -> verify_a_comfirmation_code(q, ballot),
+    accum = pmapreduce(ballot -> verify_a_confirmation_code(q, ballot),
                        combine, er.submitted_ballots)
     comment = accum.comment
     if comment == ""
-        comment = "Comfirmtion codes are correct."
+        comment = "Confirmtion codes are correct."
     end
-    answer(6, bits2items(accum.acc), "Validation of comfirmation codes",
+    answer(6, bits2items(accum.acc), "Validation of confirmation codes",
            comment, accum.count, accum.failed)
 end
 
@@ -60,7 +60,7 @@ function combine(accum1::Accum, accum2::Accum)::Accum
           accum1.failed + accum2.failed)
 end
 
-function verify_a_comfirmation_code(q::BigInt, ballot::Submitted_ballot)::Accum
+function verify_a_confirmation_code(q::BigInt, ballot::Submitted_ballot)::Accum
     enc_votes = Vector{Ciphertext}()
     for contest in ballot.contests
         for sel in contest.ballot_selections
@@ -75,7 +75,7 @@ function verify_a_comfirmation_code(q::BigInt, ballot::Submitted_ballot)::Accum
     else
         acc = A
         id = ballot.object_id
-        comment = "Invalid comfirmation code for $id."
+        comment = "Invalid confirmation code for $id."
         failed = 1
     end
     Accum(comment, acc, 1, failed)

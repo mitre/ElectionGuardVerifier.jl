@@ -1,4 +1,4 @@
-# 6B. Check for Duplicate Comfirmation Codes
+# 6B. Check for Duplicate Confirmation Codes
 
 #=
 Copyright (c) 2022 The MITRE Corporation
@@ -8,20 +8,20 @@ modify it under the terms of the MIT License.
 =#
 
 """
-    Duplicate_comf_code
+    Duplicate_conf_code
 
-Ensure there are no duplicate comfirmation codes in submitted ballots.
+Ensure there are no duplicate confirmation codes in submitted ballots.
 """
-module Duplicate_comf_codes
+module Duplicate_conf_codes
 
 using ..Datatypes
 using ..Answers
 
-export verify_duplicate_comf_codes
+export verify_duplicate_conf_codes
 
-"6B. Verify for Duplicate Comfirmation Codes"
-function verify_duplicate_comf_codes(er::Election_record)::Answer
-    comment = "No duplicate comfirmation codes found."
+"6B. Verify for Duplicate Confirmation Codes"
+function verify_duplicate_conf_codes(er::Election_record)::Answer
+    comment = "No duplicate confirmation codes found."
     count = 0                   # Records checked
     failed = 0
     seen = Dict{BigInt, String}()
@@ -32,11 +32,11 @@ function verify_duplicate_comf_codes(er::Election_record)::Answer
     for ballot in er.submitted_ballots
         count += 1
         if haskey(seen, ballot.code)
-            # Found duplicate comfirmation code
+            # Found duplicate confirmation code
             failed += 1
             old = seen[ballot.code]
             new = ballot.object_id
-            comment = "Duplicate comfirmation codes detected $old and $new."
+            comment = "Duplicate confirmation codes detected $old and $new."
         else
             seen[ballot.code] = ballot.object_id
         end
