@@ -65,7 +65,7 @@ function check_sum(contests::Dict{String, Manifest_contest},
             votes += sel.tally
         end
         votes_allowed = contests[contest.object_id].votes_allowed
-        if votes > votes_allowed then
+        if votes > votes_allowed
             return B
         end
     end
