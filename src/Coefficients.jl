@@ -23,7 +23,12 @@ function verify_coefficients(er::Election_record)::Answer
     coefs = er.coefficients.coefficients
     for (ell, w_ell) in coefs
         count += 1
-        ell = parse(Int64, ell)
+        ell = tryparse(Int64, ell)
+	if ell == nothing
+	    failed += 1
+	    comment = "Bad guardian identifier $ell -- must be an int."
+	    continue
+	end
         prod_j = 1
         prod_j_minus_ell = 1
         for j in 1:length(coefs)
