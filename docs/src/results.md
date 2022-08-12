@@ -16,6 +16,9 @@ is the result of performing the check described in Step 1.
 The verifier implements all verification steps with the following
 exceptions:
 
+ * Step 3B where the spec says Qbar = H(Q, K) but what was implemented
+   is Qbar = H(Q, commitment hash).
+
  * Step 6A on checking confirmation codes is not implemented because
    the specification does not describe the check with enough detail.
 
