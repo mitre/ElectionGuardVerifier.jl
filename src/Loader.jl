@@ -347,11 +347,11 @@ function load_spoiled_ballots(path)
 end
 
 """
-    load(path::AbstractString)::Election_record
+    load_election_record(path::AbstractString)::Election_record
 
 Load election records in the given directory.
 """
-function load(path::AbstractString)::Election_record
+function load_election_record(path::AbstractString)::Election_record
     path = realpath(expanduser(path))
     manifest = load_manifest(joinpath(path, "manifest.json"))
     election_id = manifest.election_scope_id
@@ -380,6 +380,21 @@ function load(path::AbstractString)::Election_record
                     spoiled_ballots,
                     encrypted_tally,
                     tally)
+end
+
+"""
+    load(path::AbstractString)::Election_record
+
+Load election records in the given directory.  On error, print load error
+message before crashing.
+"""
+function load(path::AbstractString)::Election_record
+    try
+        load_election_record(path)
+    catch e
+        println("Error loading the election record at $path")
+	throw(e)
+    end
 end
 
 end
