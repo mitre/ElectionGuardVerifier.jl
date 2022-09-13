@@ -45,7 +45,7 @@ record.
 
 ```@docs
 Loader
-load_election_record(path::AbstractString)
+load(path::AbstractString)
 ```
 
 ## Utililies
