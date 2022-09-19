@@ -262,7 +262,7 @@ function load_encrypted_tally(path)
 end
 
 function load_chaum_pedersen_proof(dict)
-    if dict == nothing
+    if dict === nothing
         nothing
     else
         Chaum_Pedersen_proof(dict["usage"],
@@ -283,7 +283,7 @@ function load_recovered_part(dict)
 end
 
 function load_recovered_parts(dict)
-    if dict == nothing
+    if dict === nothing
         nothing
     else
         parts = Dict{String, Recovered_part}()

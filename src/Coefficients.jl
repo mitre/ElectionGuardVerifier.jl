@@ -24,7 +24,7 @@ function verify_coefficients(er::Election_record)::Answer
     for (ell, w_ell) in coefs
         count += 1
         ell = tryparse(Int64, ell)
-	if ell == nothing
+	if ell === nothing
 	    failed += 1
 	    comment = "Bad guardian identifier $ell -- must be an int."
 	    continue
