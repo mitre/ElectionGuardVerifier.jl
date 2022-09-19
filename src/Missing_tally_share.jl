@@ -32,7 +32,7 @@ function verify_missing_tally_share(er::Election_record,
         # for each selection in contest
         for (_, sel) in c.selections
             for share in sel.shares
-                if share.proof == nothing
+                if share.proof === nothing
                     count += 1
                     prod = one(BigInt)
                     for (_, rp) in share.recovered_parts
