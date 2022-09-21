@@ -1,7 +1,8 @@
 # Results
 
 The `check` function implements what is described in the version 1.1
-[ElectionGuard Specification](https://www.electionguard.vote/spec/).
+[ElectionGuard
+Specification](https://github.com/microsoft/electionguard/releases/tag/v1.1/EG_spec_v1.1.pdf).
 To understand the output of the MITRE ElectionGuard Verifier, please
 turn to Section 5.2 titled "Verifier Steps".  The numbers in the
 output correspond to the steps listed in this section.  For example,
