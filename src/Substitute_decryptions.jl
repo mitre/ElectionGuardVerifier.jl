@@ -29,7 +29,7 @@ function verify_substitute_decryptions(er::Election_record,
         for (_, sel) in c.selections
             msg = sel.message
             for share in sel.shares
-                if share.proof == nothing
+                if share.proof === nothing
                     count += 1
                     bits = are_substitute_decryptions_correct(er, msg, share)
                     if bits != 0

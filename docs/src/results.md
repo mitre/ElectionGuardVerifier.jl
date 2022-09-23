@@ -127,3 +127,16 @@ Each answer has the following form.
   ]
 }
 ```
+
+## Election Record Loading Failures
+
+If the MITRE ElectionGuard Verifier receives an election record that
+is not well formed, the program prints
+
+```
+Error loading the election record at PATH
+```
+
+where PATH is the location of the election record loaded.  It then
+prints a stack trace for experience Julia programmers that identifies
+the cause of the loading failure.

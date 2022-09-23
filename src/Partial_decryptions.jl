@@ -99,7 +99,7 @@ function are_partial_decryptions_correct_d(er::Election_record,
     c = er.constants
     p = shr.proof
     Ki = get_guardian_pubkey(er, shr.guardian_id)
-    if Ki != nothing
+    if Ki !== nothing
         powermod(c.g, p.response, c.p) ==
     	    mulpowmod(p.pad, Ki, p.challenge, c.p) ? 0 : D
     else
