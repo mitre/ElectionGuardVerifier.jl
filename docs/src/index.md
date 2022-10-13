@@ -14,7 +14,7 @@ ElectionGuard uses cryptography to ensure that
 
 Version 1.0.0 of the MITRE ElectionGuard Verifier provides the means
 to validate specification [version 1.1
-ElectionGuard](https://github.com/microsoft/electionguard/releases/tag/v1.1/EG_spec_v1.1.pdf)
+ElectionGuard](https://github.com/microsoft/electionguard/releases/tag/v1.1/EG_spec_v1_1.pdf)
 election records that use version [1.0 data
 formats](https://github.com/microsoft/electionguard/releases/tag/v1.1)
 in an easy to use package.
