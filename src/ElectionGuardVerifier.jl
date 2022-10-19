@@ -107,7 +107,7 @@ function verify(er::Election_record)::Verification_record
     print_push!(as, Election_pubkey.verify_election_pubkey(er))
     print_push!(as, Selection_encryptions.verify_selection_encryptions(er))
     print_push!(as, Vote_limits.verify_vote_limits(er))
-    println("6A. Correctness of confirmation codes was not checked.")
+    # println("6A. Correctness of confirmation codes was not checked.")
     print_push!(as, Duplicate_conf_codes.verify_duplicate_conf_codes(er))
     print_push!(as, Ballot_aggregation.verify_ballot_aggregation(er))
     print_push!(as, Partial_decryptions.
