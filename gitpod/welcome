@@ -1,0 +1,18 @@
+Welcome to the MITRE Verifier gitpod.
+
+This environment has been set up so you can try out the verifier yourself
+
+To run the verifier yourself on our sample data, use the command:
+
+gitpod% verify gitpod/example
+
+To run the verifier on the election record from the November 2022 pilot election:
+
+gitpod% verifypilot
+
+Alternatively, if you have a URL for a zipped election record to verify:
+
+gitpod% verifyurl <url>
+
+The verifier will finish its output with "true" if no errors are found in the record.
+
