@@ -50,6 +50,10 @@ When more than one record fails during a check, the comment associated
 with the failures is non-deterministically picked from one of the
 failures.
 
+### Sample Output
+
+![Results](assets/example.png)
+
 ## Verification Record as JSON
 
 When the `check` method is called with an addition string, the string
