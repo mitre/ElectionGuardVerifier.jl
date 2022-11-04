@@ -19,6 +19,8 @@ Follow the instructions at the Julia web site to download and install
 the system on your computer.  The user instructions are at 
 [ElectionGuardVerifier.jl](https://mitre.github.io/ElectionGuardVerifier.jl).
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mitre/ElectionGuardVerifier.jl)
+
 ## Developer Instructions
 
 To develop the code locally, one must install the

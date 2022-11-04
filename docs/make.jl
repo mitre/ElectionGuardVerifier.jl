@@ -15,6 +15,7 @@ makedocs(
         "installation.md",
         "usage.md",
         "results.md",
+	"gitpod.md",
         "development.md"
     ]
 )
