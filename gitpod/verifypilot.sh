@@ -1,9 +1,6 @@
 #! /bin/sh
 
-echo "Cannot verify: pilot election has not occurred yet!"
-echo "Try a different option instead, such as 'verify example'"
-exit 1
-
+echo "Verification takes a while on gitpod, please be patient."
 
 wget https://cdn.enhancedresults.com/results/elections/b2a78ab6-7b74-4135-916a-ad678f2c6983/election-record.zip
 
